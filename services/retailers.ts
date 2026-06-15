@@ -4,7 +4,7 @@ const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 
 export async function getPendingApprovals(cookieHeader: string) {
   "use cache";
-  cacheLife("seconds");
+  cacheLife("days");
   cacheTag("pending-approvals");
 
   const backendUrl = getBackendUrl();
@@ -34,7 +34,7 @@ export async function getPendingApprovals(cookieHeader: string) {
 
 export async function getApprovedRetailers(cookieHeader: string) {
   "use cache";
-  cacheLife("seconds");
+  cacheLife("days");
   cacheTag("approved-retailers");
 
   const backendUrl = getBackendUrl();

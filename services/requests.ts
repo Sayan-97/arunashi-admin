@@ -4,7 +4,7 @@ const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 
 export async function getAllProductRequests(cookieHeader: string) {
   "use cache";
-  cacheLife("seconds");
+  cacheLife("days");
   cacheTag("product-requests");
 
   const backendUrl = getBackendUrl();
