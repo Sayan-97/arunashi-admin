@@ -115,9 +115,9 @@ export async function login(
 
 export async function logout() {
   const cookieStore = await cookies();
-  cookieStore.delete("adminAccessToken");
-  cookieStore.delete("adminRefreshToken");
-  cookieStore.delete("accessToken");
-  cookieStore.delete("refreshToken");
+  cookieStore.delete("arunashiAdminAccessToken");
+  cookieStore.delete("arunashiAdminRefreshToken");
+  cookieStore.delete("arunashiAccessToken");
+  cookieStore.delete("arunashiRefreshToken");
   redirect("/login");
 }

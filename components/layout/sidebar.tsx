@@ -25,11 +25,12 @@ export default function Sidebar() {
   };
 
   const isRetailersSelected = isSelected("/retailers");
+  const isRequestsSelected = isSelected("/requests");
 
   const navItems = [
     { label: "Dashboard", href: "/", icon: Home },
     { label: "Retailers", href: "/retailers/pending-approvals", icon: Users },
-    { label: "Requests", href: "/requests", icon: FileText },
+    { label: "Requests", href: "/requests/pending-requests", icon: FileText },
     { label: "Products", href: "/products", icon: Activity },
     { label: "Content", href: "/content", icon: LayoutGrid },
     { label: "Settings", href: "/settings", icon: Settings },
@@ -56,7 +57,9 @@ export default function Sidebar() {
           const active =
             item.label === "Retailers"
               ? isRetailersSelected
-              : isSelected(item.href);
+              : item.label === "Requests"
+                ? isRequestsSelected
+                : isSelected(item.href);
 
           return (
             <div key={item.label} className="space-y-1">
@@ -100,6 +103,32 @@ export default function Sidebar() {
                     }`}
                   >
                     Approved Retailers
+                  </Link>
+                </div>
+              )}
+
+              {/* Requests Submenu */}
+              {item.label === "Requests" && isRequestsSelected && (
+                <div className="pl-12.5 pr-4 py-1.5 flex flex-col gap-3">
+                  <Link
+                    href="/requests/pending-requests"
+                    className={`text-[14px] transition-colors ${
+                      pathname === "/requests/pending-requests"
+                        ? "text-[#627426] font-semibold"
+                        : "text-[#3a3a3a]/80 hover:text-black font-normal"
+                    }`}
+                  >
+                    Pending Requests
+                  </Link>
+                  <Link
+                    href="/requests/all-requests"
+                    className={`text-[14px] transition-colors ${
+                      pathname === "/requests/all-requests"
+                        ? "text-[#627426] font-semibold"
+                        : "text-[#3a3a3a]/80 hover:text-black font-normal"
+                    }`}
+                  >
+                    All Requests
                   </Link>
                 </div>
               )}

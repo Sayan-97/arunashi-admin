@@ -22,7 +22,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.rewrite(targetUrl);
   }
 
-  const hasAccessToken = request.cookies.has("adminAccessToken");
+  const hasAccessToken = request.cookies.has("arunashiAdminAccessToken");
   const isAuthenticated = hasAccessToken;
 
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));

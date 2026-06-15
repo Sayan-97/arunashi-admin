@@ -57,7 +57,7 @@ async function PendingApprovalsContent({
 }) {
   const query = (await searchParams).search || "";
   const cookieStore = await cookies();
-  const hasToken = cookieStore.has("adminAccessToken");
+  const hasToken = cookieStore.has("arunashiAdminAccessToken");
   if (!hasToken) {
     redirect("/login");
   }
@@ -67,10 +67,10 @@ async function PendingApprovalsContent({
     pendingRetailers = await getPendingApprovals(cookieStore.toString());
   } catch (err: any) {
     if (err.message === "Unauthorized") {
-      cookieStore.delete("adminAccessToken");
-      cookieStore.delete("accessToken");
-      cookieStore.delete("adminRefreshToken");
-      cookieStore.delete("refreshToken");
+      cookieStore.delete("arunashiAdminAccessToken");
+      cookieStore.delete("arunashiAccessToken");
+      cookieStore.delete("arunashiAdminRefreshToken");
+      cookieStore.delete("arunashiRefreshToken");
       redirect("/login");
     }
     throw err;
@@ -129,19 +129,19 @@ async function PendingApprovalsContent({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[#EEEEEE] sticky top-0 bg-white z-10 shadow-[inset_0_-1px_0_rgba(0,0,0,0.05)]">
-                <th className="py-4.5 px-6 text-[13px] font-medium text-[#868686] uppercase tracking-wider">
+                <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                   Retailers
                 </th>
-                <th className="py-4.5 px-6 text-[13px] font-medium text-[#868686] uppercase tracking-wider">
+                <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                   Business Name
                 </th>
-                <th className="py-4.5 px-6 text-[13px] font-medium text-[#868686] uppercase tracking-wider">
+                <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                   Email
                 </th>
-                <th className="py-4.5 px-6 text-[13px] font-medium text-[#868686] uppercase tracking-wider">
+                <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                   Date Applied
                 </th>
-                <th className="py-4.5 px-6 text-[13px] font-medium text-[#868686] uppercase tracking-wider text-right lg:text-left">
+                <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider text-right lg:text-left">
                   Actions
                 </th>
               </tr>

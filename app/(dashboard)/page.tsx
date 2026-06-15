@@ -84,7 +84,7 @@ async function DashboardContent() {
   const token = cookieStore.toString();
 
   // Guard: Redirect if cookies are empty
-  const hasToken = cookieStore.has("adminAccessToken");
+  const hasToken = cookieStore.has("arunashiAdminAccessToken");
   if (!hasToken) {
     redirect("/login");
   }
@@ -97,10 +97,10 @@ async function DashboardContent() {
     allRequests = await getAllProductRequests(token);
   } catch (err: any) {
     if (err.message === "Unauthorized") {
-      cookieStore.delete("adminAccessToken");
-      cookieStore.delete("accessToken");
-      cookieStore.delete("adminRefreshToken");
-      cookieStore.delete("refreshToken");
+      cookieStore.delete("arunashiAdminAccessToken");
+      cookieStore.delete("arunashiAccessToken");
+      cookieStore.delete("arunashiAdminRefreshToken");
+      cookieStore.delete("arunashiRefreshToken");
       redirect("/login");
     }
     throw err;
@@ -209,22 +209,22 @@ async function DashboardContent() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-[#EEEEEE] bg-[#FAF9F6]/20">
-                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] uppercase tracking-wider">
+                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                         Request ID
                       </th>
-                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] uppercase tracking-wider">
+                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                         Retailer
                       </th>
-                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] uppercase tracking-wider">
+                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                         Products
                       </th>
-                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] uppercase tracking-wider">
+                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                         Date
                       </th>
-                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] uppercase tracking-wider">
+                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                         Status
                       </th>
-                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] uppercase tracking-wider text-right">
+                      <th className="py-4 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider text-right">
                         Action
                       </th>
                     </tr>
@@ -267,7 +267,9 @@ async function DashboardContent() {
                             </span>
                           </td>
                           <td className="py-4.5 px-6 text-right">
-                            <Link href="/requests">
+                            <Link
+                              href={`/requests/pending-requests?open=${request.id}`}
+                            >
                               <button
                                 type="button"
                                 className="h-8 px-4 rounded-[6px] border border-[#bec36c] text-[#627426] hover:bg-[#627426] hover:text-white transition-all text-xs font-semibold cursor-pointer"
