@@ -83,12 +83,6 @@ async function DashboardContent() {
   const cookieStore = await cookies();
   const token = cookieStore.toString();
 
-  // Guard: Redirect if cookies are empty
-  const hasToken = cookieStore.has("arunashiAdminAccessToken");
-  if (!hasToken) {
-    redirect("/login");
-  }
-
   let pendingRetailers: Retailer[] = [];
   let allRequests: ProductRequest[] = [];
 

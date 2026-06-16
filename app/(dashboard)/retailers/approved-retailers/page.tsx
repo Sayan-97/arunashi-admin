@@ -56,10 +56,6 @@ async function ApprovedRetailersContent({
 }) {
   const query = (await searchParams).search || "";
   const cookieStore = await cookies();
-  const hasToken = cookieStore.has("arunashiAdminAccessToken");
-  if (!hasToken) {
-    redirect("/login");
-  }
 
   let approvedRetailers: Retailer[] = [];
   try {

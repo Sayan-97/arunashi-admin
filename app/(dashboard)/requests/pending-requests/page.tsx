@@ -73,10 +73,6 @@ async function PendingRequestsContent({
   const currentPage = Math.max(1, Number.parseInt(pageParam, 10) || 1);
 
   const cookieStore = await cookies();
-  const hasToken = cookieStore.has("arunashiAdminAccessToken");
-  if (!hasToken) {
-    redirect("/login");
-  }
 
   let requests: ProductRequest[] = [];
   try {

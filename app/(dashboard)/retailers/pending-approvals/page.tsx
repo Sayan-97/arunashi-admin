@@ -57,10 +57,6 @@ async function PendingApprovalsContent({
 }) {
   const query = (await searchParams).search || "";
   const cookieStore = await cookies();
-  const hasToken = cookieStore.has("arunashiAdminAccessToken");
-  if (!hasToken) {
-    redirect("/login");
-  }
 
   let pendingRetailers: Retailer[] = [];
   try {
