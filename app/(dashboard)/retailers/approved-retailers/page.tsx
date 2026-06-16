@@ -1,7 +1,8 @@
-import { Bell, MoreVertical, Search } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { ViewRetailerButton } from "@/components/retailers/ViewRetailerButton";
 import { getApprovedRetailers } from "@/services/retailers";
 
 interface Retailer {
@@ -10,6 +11,8 @@ interface Retailer {
   email: string;
   company: string | null;
   phone: string | null;
+  address: string | null;
+  press_title: string | null;
   createdAt: string;
 }
 
@@ -120,7 +123,7 @@ async function ApprovedRetailersContent({
 
       {/* Table Container */}
       <div className="bg-white border border-[#EEEEEE] rounded-[10px] shadow-sm overflow-hidden flex flex-col">
-        <div className="overflow-auto max-h-[520px]">
+        <div className="w-full">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[#EEEEEE] sticky top-0 bg-white z-10 shadow-[inset_0_-1px_0_rgba(0,0,0,0.05)]">
@@ -181,12 +184,7 @@ async function ApprovedRetailersContent({
                     {/* Actions */}
                     <td className="py-5 px-6 align-middle text-right lg:text-left">
                       <div className="inline-flex items-center gap-3">
-                        <button
-                          type="button"
-                          className="p-1.5 text-[#868686] hover:text-black transition-colors rounded-full hover:bg-gray-100"
-                        >
-                          <MoreVertical className="size-[18px]" />
-                        </button>
+                        <ViewRetailerButton retailer={retailer} />
                       </div>
                     </td>
                   </tr>

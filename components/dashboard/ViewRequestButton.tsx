@@ -135,9 +135,9 @@ export function ViewRequestButton({
         </DialogHeader>
 
         {/* Content Body */}
-        <div className="flex-1 overflow-y-auto space-y-6 pr-1.5 scrollbar-thin">
-          {/* Retailer Info section */}
-          <div className="bg-[#FAF9F6]/60 border border-[#EEEEEE] rounded-[8px] p-4 space-y-3">
+        <div className="flex-1 flex flex-col gap-5 min-h-0 overflow-hidden">
+          {/* Retailer Info section - Static */}
+          <div className="bg-[#FAF9F6]/60 border border-[#EEEEEE] rounded-[8px] p-4 space-y-3 shrink-0">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#627426] font-sans">
               Retailer Details
             </h3>
@@ -170,8 +170,9 @@ export function ViewRequestButton({
           </div>
 
           {/* Requested Products section */}
-          <div className="space-y-4.5">
-            <div className="flex items-center justify-between border-b border-[#EEEEEE] pb-2">
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+            {/* Heading - Static */}
+            <div className="flex items-center justify-between border-b border-[#EEEEEE] pb-2 shrink-0">
               <h3 className="text-xs font-bold uppercase tracking-wider text-[#627426] font-sans">
                 Requested Products ({items.length})
               </h3>
@@ -188,7 +189,8 @@ export function ViewRequestButton({
               </span>
             </div>
 
-            <div className="space-y-4">
+            {/* List - Scrollable */}
+            <div className="flex-1 overflow-y-auto space-y-4 pt-3 pr-1.5 scrollbar-thin min-h-0">
               {items.map((item: any, idx: number) => (
                 <div
                   key={`${item.id || idx}`}

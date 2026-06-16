@@ -114,11 +114,6 @@ async function PendingRequestsContent({
     safePage * limit,
   );
 
-  // Helper to format ID
-  const formatRequestId = (uuid: string) => {
-    return `REQ-${uuid.split("-")[0].substring(0, 4).toUpperCase()}`;
-  };
-
   // Helper to format date
   const formatDate = (dateStr: string) => {
     try {
@@ -147,15 +142,6 @@ async function PendingRequestsContent({
     }
   };
 
-  // Helper to get initials
-  const getInitials = (name: string) => {
-    const parts = name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
-  };
-
   return (
     <>
       {/* Search Bar */}
@@ -174,21 +160,15 @@ async function PendingRequestsContent({
 
       {/* Table Container */}
       <div className="bg-white border border-[#EEEEEE] rounded-[10px] shadow-sm overflow-hidden flex flex-col">
-        <div className="overflow-auto max-h-[580px]">
+        <div className="w-full">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[#EEEEEE] sticky top-0 bg-white z-10 shadow-[inset_0_-1px_0_rgba(0,0,0,0.05)]">
                 <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
-                  Request ID
-                </th>
-                <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
-                  Retailer
-                </th>
-                <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                   Products
                 </th>
                 <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
-                  Request Type
+                  Retailer
                 </th>
                 <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider select-none">
                   Date Requested &darr;
@@ -211,10 +191,6 @@ async function PendingRequestsContent({
                     ? request.items
                     : [];
                   const itemsCount = items.length;
-                  const hasNotes = items.some(
-                    (item: any) => item.notes && item.notes.trim().length > 0,
-                  );
-                  const requestType = hasNotes ? "Custom Quote" : "Wholesale";
                   const retailerName =
                     request.user.company || request.user.name;
 
@@ -223,44 +199,99 @@ async function PendingRequestsContent({
                       key={request.id}
                       className="border-b border-[#EEEEEE] last:border-b-0 hover:bg-gray-50/50 transition-colors"
                     >
-                      {/* Request ID */}
-                      <td className="py-5 px-6 align-middle font-mono text-sm text-[#3a3a3a]">
-                        {formatRequestId(request.id)}
-                      </td>
-
-                      {/* Retailer Info */}
+                      {/* Products */}
                       <td className="py-5 px-6 align-middle">
-                        <div className="flex items-center gap-3">
-                          <div className="size-9 bg-[#F4F3EB] text-[#7A7550] rounded-full flex items-center justify-center font-semibold text-xs shrink-0 select-none">
-                            {getInitials(retailerName)}
-                          </div>
-                          <div>
-                            <div className="font-semibold text-[15px] text-[#111111]">
-                              {retailerName}
+                        <div className="flex items-center gap-4">
+                          {/* Image Container */}
+                          {itemsCount === 1 ? (
+                            <div className="size-16 shrink-0 bg-[#FAF9F6] border border-[#EEEEEE] rounded-[6px] overflow-hidden flex items-center justify-center p-1">
+                              {items[0]?.image ? (
+                                <img
+                                  src={items[0].image}
+                                  alt={items[0].name || ""}
+                                  className="size-full object-contain"
+                                />
+                              ) : (
+                                <div className="text-[10px] text-[#868686] font-medium font-sans">
+                                  No Image
+                                </div>
+                              )}
                             </div>
-                            <div className="text-[13px] text-[#868686] mt-0.5 font-normal">
-                              {request.user.email}
+                          ) : (
+                            <div className="grid grid-cols-2 gap-0.5 size-16 shrink-0 bg-[#FAF9F6] border border-[#EEEEEE] rounded-[6px] p-0.5 overflow-hidden">
+                              {/* First item */}
+                              <div className="w-full h-full overflow-hidden flex items-center justify-center bg-white rounded-[2px]">
+                                {items[0]?.image ? (
+                                  <img
+                                    src={items[0].image}
+                                    alt=""
+                                    className="size-full object-contain"
+                                  />
+                                ) : (
+                                  <div className="text-[8px] text-[#868686] font-sans">
+                                    -
+                                  </div>
+                                )}
+                              </div>
+                              {/* Second item */}
+                              <div className="w-full h-full overflow-hidden flex items-center justify-center bg-white rounded-[2px]">
+                                {items[1]?.image ? (
+                                  <img
+                                    src={items[1].image}
+                                    alt=""
+                                    className="size-full object-contain"
+                                  />
+                                ) : (
+                                  <div className="text-[8px] text-[#868686] font-sans">
+                                    -
+                                  </div>
+                                )}
+                              </div>
+                              {/* Third item */}
+                              {itemsCount >= 3 ? (
+                                <div className="w-full h-full overflow-hidden flex items-center justify-center bg-white rounded-[2px]">
+                                  {items[2]?.image ? (
+                                    <img
+                                      src={items[2].image}
+                                      alt=""
+                                      className="size-full object-contain"
+                                    />
+                                  ) : (
+                                    <div className="text-[8px] text-[#868686] font-sans">
+                                      -
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="w-full h-full bg-gray-50/30 rounded-[2px]" />
+                              )}
+                              {/* Fourth item / + count */}
+                              {itemsCount > 3 ? (
+                                <div className="w-full h-full flex items-center justify-center bg-[#EEEEE2] rounded-[2px] text-xs font-bold text-[#627426] font-sans select-none">
+                                  +{itemsCount - 3}
+                                </div>
+                              ) : (
+                                <div className="w-full h-full bg-gray-50/30 rounded-[2px]" />
+                              )}
+                            </div>
+                          )}
+
+                          {/* Name and Item No */}
+                          <div className="min-w-0">
+                            <div className="font-semibold text-[15px] text-[#111111] leading-snug truncate max-w-[200px]">
+                              {items[0]?.name || "N/A"}
+                            </div>
+                            <div className="text-[12px] text-[#868686] mt-0.5 font-normal">
+                              Item No: {items[0]?.itemNo || "N/A"}{" "}
+                              {itemsCount > 1 && `(+${itemsCount - 1} more)`}
                             </div>
                           </div>
                         </div>
                       </td>
 
-                      {/* Products Count */}
-                      <td className="py-5 px-6 align-middle text-[14px] text-[#3a3a3a] font-medium">
-                        {itemsCount} {itemsCount === 1 ? "Product" : "Products"}
-                      </td>
-
-                      {/* Request Type */}
-                      <td className="py-5 px-6 align-middle">
-                        <span
-                          className={`inline-block px-2.5 py-1 rounded-[4px] text-xs font-semibold ${
-                            requestType === "Custom Quote"
-                              ? "bg-[#EDF2FA] text-[#2F65B6]"
-                              : "bg-[#EEF7EC] text-[#487E3E]"
-                          }`}
-                        >
-                          {requestType}
-                        </span>
+                      {/* Retailer Info */}
+                      <td className="py-5 px-6 align-middle font-semibold text-[15px] text-[#111111]">
+                        {retailerName}
                       </td>
 
                       {/* Date Requested */}
@@ -311,7 +342,7 @@ async function PendingRequestsContent({
               ) : (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={6}
                     className="py-12 text-center text-sm text-[#868686]"
                   >
                     No pending product requests found.

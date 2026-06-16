@@ -121,7 +121,7 @@ async function PendingApprovalsContent({
 
       {/* Table Container */}
       <div className="bg-white border border-[#EEEEEE] rounded-[10px] shadow-sm overflow-hidden flex flex-col">
-        <div className="overflow-auto max-h-[520px]">
+        <div className="w-full">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-[#EEEEEE] sticky top-0 bg-white z-10 shadow-[inset_0_-1px_0_rgba(0,0,0,0.05)]">
