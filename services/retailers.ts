@@ -61,3 +61,20 @@ export async function getApprovedRetailers(cookieHeader: string) {
     return [];
   }
 }
+
+export const getAllProductRequests = async (cookieHeader: string) => {
+  "use cache";
+  cacheTag("products");
+
+  const res = await fetch(
+    `https://arunashi-backend.onrender.com/api/products/requests/admin`,
+    {
+      headers: {
+        Cookie: cookieHeader,
+      },
+    },
+  );
+
+  const result = await res.json();
+  return result.data || [];
+};
