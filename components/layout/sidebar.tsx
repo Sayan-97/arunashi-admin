@@ -4,7 +4,6 @@ import {
   Activity,
   FileText,
   Home,
-  LayoutGrid,
   LogOut,
   Settings,
   Users,
@@ -26,13 +25,13 @@ export default function Sidebar() {
 
   const isRetailersSelected = isSelected("/retailers");
   const isRequestsSelected = isSelected("/requests");
+  const isProductsSelected = isSelected("/products");
 
   const navItems = [
     { label: "Dashboard", href: "/", icon: Home },
     { label: "Retailers", href: "/retailers/pending-approvals", icon: Users },
     { label: "Requests", href: "/requests/pending-requests", icon: FileText },
-    { label: "Products", href: "/products", icon: Activity },
-    { label: "Content", href: "/content", icon: LayoutGrid },
+    { label: "Products", href: "/products/active-products", icon: Activity },
     { label: "Settings", href: "/settings", icon: Settings },
   ];
 
@@ -59,7 +58,9 @@ export default function Sidebar() {
               ? isRetailersSelected
               : item.label === "Requests"
                 ? isRequestsSelected
-                : isSelected(item.href);
+                : item.label === "Products"
+                  ? isProductsSelected
+                  : isSelected(item.href);
 
           return (
             <div key={item.label} className="space-y-1">
@@ -129,6 +130,32 @@ export default function Sidebar() {
                     }`}
                   >
                     All Requests
+                  </Link>
+                </div>
+              )}
+
+              {/* Products Submenu */}
+              {item.label === "Products" && isProductsSelected && (
+                <div className="pl-12.5 pr-4 py-1.5 flex flex-col gap-3">
+                  <Link
+                    href="/products/active-products"
+                    className={`text-[14px] transition-colors ${
+                      pathname === "/products/active-products"
+                        ? "text-[#627426] font-semibold"
+                        : "text-[#3a3a3a]/80 hover:text-black font-normal"
+                    }`}
+                  >
+                    Active Products
+                  </Link>
+                  <Link
+                    href="/products/all-products"
+                    className={`text-[14px] transition-colors ${
+                      pathname === "/products/all-products"
+                        ? "text-[#627426] font-semibold"
+                        : "text-[#3a3a3a]/80 hover:text-black font-normal"
+                    }`}
+                  >
+                    All Products
                   </Link>
                 </div>
               )}

@@ -1,0 +1,103 @@
+{
+  "id": 9917271114026,
+  "title": "5mm Round Brushed Links Chain",
+  "body_html": "",
+  "vendor": "Arunashi",
+  "product_type": "Necklace",
+  "created_at": "2025-10-20T16:00:22-04:00",
+  "handle": "5mm-round-brushed-links-chain",
+  "updated_at": "2026-05-08T18:07:14-04:00",
+  "published_at": "2025-10-20T16:00:22-04:00",
+  "template_suffix": null,
+  "published_scope": "global",
+  "tags": "",
+  "status": "active",
+  "admin_graphql_api_id": "gid://shopify/Product/9917271114026",
+  "variants": [
+    {
+      "id": 50718379147562,
+      "product_id": 9917271114026,
+      "title": "18K Yellow Gold / Length - 5mm",
+      "price": "6300.00",
+      "position": 1,
+      "inventory_policy": "deny",
+      "compare_at_price": null,
+      "option1": "18K Yellow Gold",
+      "option2": "Length - 5mm",
+      "option3": null,
+      "created_at": "2025-10-20T16:00:22-04:00",
+      "updated_at": "2025-10-22T14:38:54-04:00",
+      "taxable": true,
+      "barcode": null,
+      "fulfillment_service": "manual",
+      "grams": 0,
+      "inventory_management": null,
+      "requires_shipping": true,
+      "sku": "2N000228 BNS025",
+      "weight": 0,
+      "weight_unit": "lb",
+      "inventory_item_id": 52804299292970,
+      "inventory_quantity": 0,
+      "old_inventory_quantity": 0,
+      "admin_graphql_api_id": "gid://shopify/ProductVariant/50718379147562",
+      "image_id": null
+    }
+  ],
+  "options": [
+    {
+      "id": 12427124539690,
+      "product_id": 9917271114026,
+      "name": "Material",
+      "position": 1,
+      "values": ["18K Yellow Gold"]
+    },
+    {
+      "id": 12427124572458,
+      "product_id": 9917271114026,
+      "name": "Stones",
+      "position": 2,
+      "values": ["Length - 5mm"]
+    }
+  ],
+  "images": [
+    {
+      "id": 51191708090666,
+      "alt": null,
+      "position": 1,
+      "product_id": 9917271114026,
+      "created_at": "2025-12-18T17:42:05-05:00",
+      "updated_at": "2025-12-18T17:42:13-05:00",
+      "admin_graphql_api_id": "gid://shopify/MediaImage/42034415632682",
+      "width": 3500,
+      "height": 4000,
+      "src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/WhiteBackgroundImageInstructionsExamplesWebsite_8.png?v=1766097733",
+      "variant_ids": []
+    },
+    {
+      "id": 50615849484586,
+      "alt": null,
+      "position": 2,
+      "product_id": 9917271114026,
+      "created_at": "2025-11-14T16:42:12-05:00",
+      "updated_at": "2025-12-18T17:42:13-05:00",
+      "admin_graphql_api_id": "gid://shopify/MediaImage/41468361376042",
+      "width": 504,
+      "height": 576,
+      "src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/2_17.png?v=1766097733",
+      "variant_ids": []
+    }
+  ],
+  "image": {
+    "id": 51191708090666,
+    "alt": null,
+    "position": 1,
+    "product_id": 9917271114026,
+    "created_at": "2025-12-18T17:42:05-05:00",
+    "updated_at": "2025-12-18T17:42:13-05:00",
+    "admin_graphql_api_id": "gid://shopify/MediaImage/42034415632682",
+    "width": 3500,
+    "height": 4000,
+    "src": "https://cdn.shopify.com/s/files/1/0863/0032/8234/files/WhiteBackgroundImageInstructionsExamplesWebsite_8.png?v=1766097733",
+    "variant_ids": []
+  }
+}

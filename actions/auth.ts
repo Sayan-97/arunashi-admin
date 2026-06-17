@@ -70,7 +70,6 @@ export async function login(
       const name = nameValue.substring(0, eqIdx);
       const value = nameValue.substring(eqIdx + 1);
 
-      // biome-ignore lint/suspicious/noExplicitAny: options are dynamic
       const cookieOptions: any = {};
       for (const option of options) {
         const [optName, optVal] = option.split("=");

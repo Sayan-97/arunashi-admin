@@ -385,22 +385,55 @@ async function AllRequestsContent({
               </Link>
 
               {/* Page Numbers */}
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-                const active = p === safePage;
-                return (
-                  <Link
-                    key={p}
-                    href={`?search=${encodeURIComponent(query)}&page=${p}`}
-                    className={`size-8 rounded-[6px] text-sm flex items-center justify-center font-medium transition-all ${
-                      active
-                        ? "bg-[#EEEEE2] text-[#627426] border border-transparent font-semibold"
-                        : "text-[#3a3a3a] border border-[#E5E5E5] hover:bg-gray-50 cursor-pointer"
-                    }`}
-                  >
-                    {p}
-                  </Link>
-                );
-              })}
+              {(() => {
+                const pages: (number | string)[] = [];
+                if (totalPages <= 4) {
+                  for (let i = 1; i <= totalPages; i++) {
+                    pages.push(i);
+                  }
+                } else {
+                  pages.push(1);
+                  pages.push(2);
+                  if (safePage > 3) {
+                    pages.push("...");
+                  }
+                  if (safePage > 2 && safePage < totalPages) {
+                    pages.push(safePage);
+                  }
+                  if (safePage < totalPages - 1) {
+                    pages.push("...");
+                  }
+                  pages.push(totalPages);
+                }
+                const uniquePages = Array.from(new Set(pages));
+
+                return uniquePages.map((p, idx) => {
+                  if (p === "...") {
+                    return (
+                      <span
+                        key={`dots-${idx}`}
+                        className="size-8 flex items-center justify-center text-sm text-[#868686] select-none"
+                      >
+                        ...
+                      </span>
+                    );
+                  }
+                  const active = p === safePage;
+                  return (
+                    <Link
+                      key={p}
+                      href={`?search=${encodeURIComponent(query)}&page=${p}`}
+                      className={`size-8 rounded-[6px] text-sm flex items-center justify-center font-medium transition-all ${
+                        active
+                          ? "bg-[#EEEEE2] text-[#627426] border border-transparent font-semibold"
+                          : "text-[#3a3a3a] border border-[#E5E5E5] hover:bg-gray-50 cursor-pointer"
+                      }`}
+                    >
+                      {p}
+                    </Link>
+                  );
+                });
+              })()}
 
               {/* Next Page */}
               <Link
