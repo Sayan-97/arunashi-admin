@@ -1,10 +1,9 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { getAuthCookieHeader } from "@/lib/auth";
 
 export async function changePassword(payload: any) {
   const backendUrl = process.env.API_URL || "http://localhost:8000";
-  const cookieStore = await cookies();
 
   try {
     const res = await fetch(
@@ -13,7 +12,7 @@ export async function changePassword(payload: any) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
+          Cookie: await getAuthCookieHeader(),
         },
         body: JSON.stringify(payload),
       },

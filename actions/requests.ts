@@ -1,14 +1,13 @@
 "use server";
 
 import { updateTag } from "next/cache";
-import { cookies } from "next/headers";
+import { getAuthCookieHeader } from "@/lib/auth";
 
 export async function updateRequestStatus(
   id: string,
   status: "PENDING" | "APPROVED" | "REJECTED",
 ) {
   const backendUrl = process.env.API_URL || "http://localhost:8000";
-  const cookieStore = await cookies();
 
   try {
     const res = await fetch(
@@ -17,7 +16,7 @@ export async function updateRequestStatus(
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
+          Cookie: await getAuthCookieHeader(),
         },
         body: JSON.stringify({ status }),
       },

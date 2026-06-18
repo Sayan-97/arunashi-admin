@@ -10,6 +10,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ViewRequestButton } from "@/components/dashboard/ViewRequestButton";
+import { getAuthCookieHeader } from "@/lib/auth";
 import { getAllProductRequests } from "@/services/requests";
 
 interface ProductRequest {
@@ -72,17 +73,14 @@ async function PendingRequestsContent({
   const pageParam = (await searchParams).page || "1";
   const currentPage = Math.max(1, Number.parseInt(pageParam, 10) || 1);
 
-  const cookieStore = await cookies();
-
   let requests: ProductRequest[] = [];
   try {
-    requests = await getAllProductRequests(cookieStore.toString());
+    requests = await getAllProductRequests(await getAuthCookieHeader());
   } catch (err: any) {
     if (err.message === "Unauthorized") {
+      const cookieStore = await cookies();
       cookieStore.delete("arunashiAdminAccessToken");
-      cookieStore.delete("arunashiAccessToken");
       cookieStore.delete("arunashiAdminRefreshToken");
-      cookieStore.delete("arunashiRefreshToken");
       redirect("/login");
     }
     throw err;

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import SettingsClient from "@/components/settings/SettingsClient";
+import { getAuthCookieHeader } from "@/lib/auth";
 import { getAuditLogs } from "@/services/settings";
 
 export default function SettingsPage() {
@@ -31,8 +32,7 @@ export default function SettingsPage() {
 }
 
 async function SettingsContent() {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
+  const cookieHeader = await getAuthCookieHeader();
 
   let logs = [];
   try {
@@ -40,10 +40,9 @@ async function SettingsContent() {
   } catch (err: any) {
     if (err.message === "Unauthorized") {
       // Clear administration cookies
+      const cookieStore = await cookies();
       cookieStore.delete("arunashiAdminAccessToken");
-      cookieStore.delete("arunashiAccessToken");
       cookieStore.delete("arunashiAdminRefreshToken");
-      cookieStore.delete("arunashiRefreshToken");
       redirect("/login");
     }
     throw err;

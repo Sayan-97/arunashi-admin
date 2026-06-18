@@ -19,7 +19,26 @@ export function proxy(request: NextRequest) {
       backendUrl,
     );
 
-    return NextResponse.rewrite(targetUrl);
+    const requestHeaders = new Headers(request.headers);
+
+    // Filter cookies to ONLY include arunashi admin cookies
+    const access = request.cookies.get("arunashiAdminAccessToken")?.value;
+    const refresh = request.cookies.get("arunashiAdminRefreshToken")?.value;
+    const cookieParts = [];
+    if (access) cookieParts.push(`arunashiAdminAccessToken=${access}`);
+    if (refresh) cookieParts.push(`arunashiAdminRefreshToken=${refresh}`);
+
+    if (cookieParts.length > 0) {
+      requestHeaders.set("Cookie", cookieParts.join("; "));
+    } else {
+      requestHeaders.delete("Cookie");
+    }
+
+    return NextResponse.rewrite(targetUrl, {
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
   const hasAccessToken = request.cookies.has("arunashiAdminAccessToken");

@@ -116,7 +116,5 @@ export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete("arunashiAdminAccessToken");
   cookieStore.delete("arunashiAdminRefreshToken");
-  cookieStore.delete("arunashiAccessToken");
-  cookieStore.delete("arunashiRefreshToken");
   redirect("/login");
 }

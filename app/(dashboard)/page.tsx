@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { SyncButton } from "@/components/dashboard/SyncButton";
+import { getAuthCookieHeader } from "@/lib/auth";
 import { getAllProductRequests } from "@/services/requests";
 import { getPendingApprovals } from "@/services/retailers";
 
@@ -80,8 +81,7 @@ export default function DashboardHomePage() {
 }
 
 async function DashboardContent() {
-  const cookieStore = await cookies();
-  const token = cookieStore.toString();
+  const token = await getAuthCookieHeader();
 
   let pendingRetailers: Retailer[] = [];
   let allRequests: ProductRequest[] = [];
@@ -91,10 +91,9 @@ async function DashboardContent() {
     allRequests = await getAllProductRequests(token);
   } catch (err: any) {
     if (err.message === "Unauthorized") {
+      const cookieStore = await cookies();
       cookieStore.delete("arunashiAdminAccessToken");
-      cookieStore.delete("arunashiAccessToken");
       cookieStore.delete("arunashiAdminRefreshToken");
-      cookieStore.delete("arunashiRefreshToken");
       redirect("/login");
     }
     throw err;

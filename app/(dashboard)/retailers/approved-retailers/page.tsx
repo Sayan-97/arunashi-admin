@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ViewRetailerButton } from "@/components/retailers/ViewRetailerButton";
+import { getAuthCookieHeader } from "@/lib/auth";
 import { getApprovedRetailers } from "@/services/retailers";
 
 interface Retailer {
@@ -58,17 +59,15 @@ async function ApprovedRetailersContent({
   searchParams: Promise<{ search?: string }>;
 }) {
   const query = (await searchParams).search || "";
-  const cookieStore = await cookies();
 
   let approvedRetailers: Retailer[] = [];
   try {
-    approvedRetailers = await getApprovedRetailers(cookieStore.toString());
+    approvedRetailers = await getApprovedRetailers(await getAuthCookieHeader());
   } catch (err: any) {
     if (err.message === "Unauthorized") {
+      const cookieStore = await cookies();
       cookieStore.delete("arunashiAdminAccessToken");
-      cookieStore.delete("arunashiAccessToken");
       cookieStore.delete("arunashiAdminRefreshToken");
-      cookieStore.delete("arunashiRefreshToken");
       redirect("/login");
     }
     throw err;

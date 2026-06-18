@@ -1,8 +1,8 @@
 import { Bell, ChevronLeft, ChevronRight, Search } from "lucide-react";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ProductActions } from "@/components/products/ProductActions";
+import { getAuthCookieHeader } from "@/lib/auth";
 import { getShopifyProducts } from "@/services/products";
 
 interface ShopifyProduct {
@@ -78,9 +78,8 @@ async function AllProductsContent({
   const pageParam = (await searchParams).page || "1";
   const currentPage = Math.max(1, Number.parseInt(pageParam, 10) || 1);
 
-  const cookieStore = await cookies();
   const products: ShopifyProduct[] = await getShopifyProducts(
-    cookieStore.toString(),
+    await getAuthCookieHeader(),
   );
 
   // Filter for only active products
@@ -124,7 +123,7 @@ async function AllProductsContent({
             All Products
           </h1>
           <span className="bg-[#FAF9F6] border border-[#EEEEEE] text-[#627426] text-xs font-semibold px-2.5 py-0.5 rounded-full animate-in fade-in duration-200">
-            {activeCount} Active
+            {activeCount} Total
           </span>
         </div>
         <button
@@ -238,7 +237,7 @@ async function AllProductsContent({
                                 </span>
                               </div>
                               <div className="text-[12px] text-[#868686] mt-0.5 font-normal pl-4">
-                                SKU: {sku}
+                                Item no.: {sku}
                               </div>
                             </div>
                           </div>

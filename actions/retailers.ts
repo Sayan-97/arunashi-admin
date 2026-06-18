@@ -1,11 +1,10 @@
 "use server";
 
 import { updateTag } from "next/cache";
-import { cookies } from "next/headers";
+import { getAuthCookieHeader } from "@/lib/auth";
 
 export async function approveRetailer(id: string) {
   const backendUrl = process.env.API_URL || "http://localhost:8000";
-  const cookieStore = await cookies();
 
   try {
     const res = await fetch(
@@ -13,7 +12,7 @@ export async function approveRetailer(id: string) {
       {
         method: "POST",
         headers: {
-          Cookie: cookieStore.toString(),
+          Cookie: await getAuthCookieHeader(),
         },
       },
     );

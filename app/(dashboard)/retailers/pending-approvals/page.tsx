@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ApproveButton } from "@/components/retailers/ApproveButton";
+import { getAuthCookieHeader } from "@/lib/auth";
 import { getPendingApprovals } from "@/services/retailers";
 
 interface Retailer {
@@ -56,17 +57,15 @@ async function PendingApprovalsContent({
   searchParams: Promise<{ search?: string }>;
 }) {
   const query = (await searchParams).search || "";
-  const cookieStore = await cookies();
 
   let pendingRetailers: Retailer[] = [];
   try {
-    pendingRetailers = await getPendingApprovals(cookieStore.toString());
+    pendingRetailers = await getPendingApprovals(await getAuthCookieHeader());
   } catch (err: any) {
     if (err.message === "Unauthorized") {
+      const cookieStore = await cookies();
       cookieStore.delete("arunashiAdminAccessToken");
-      cookieStore.delete("arunashiAccessToken");
       cookieStore.delete("arunashiAdminRefreshToken");
-      cookieStore.delete("arunashiRefreshToken");
       redirect("/login");
     }
     throw err;
