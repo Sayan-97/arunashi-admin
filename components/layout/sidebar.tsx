@@ -3,9 +3,11 @@
 import {
   Activity,
   FileText,
+  Gem,
   Home,
   LogOut,
   Settings,
+  Sparkles,
   Users,
 } from "lucide-react";
 import Image from "next/image";
@@ -32,6 +34,9 @@ export default function Sidebar() {
     { label: "Retailers", href: "/retailers/pending-approvals", icon: Users },
     { label: "Requests", href: "/requests/pending-requests", icon: FileText },
     { label: "Products", href: "/products/active-products", icon: Activity },
+    { label: "Magazines", href: "/magazines", icon: FileText },
+    { label: "Diamonds", href: "/diamonds", icon: Gem },
+    { label: "Gemstones", href: "/gemstones", icon: Sparkles },
     { label: "Settings", href: "/settings", icon: Settings },
   ];
 

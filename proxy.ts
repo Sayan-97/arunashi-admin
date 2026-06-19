@@ -12,7 +12,10 @@ const AUTH_ROUTES = [
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/api") && !pathname.startsWith("/api/email")) {
+  if (
+    (pathname.startsWith("/api") && !pathname.startsWith("/api/email")) ||
+    pathname.startsWith("/public/uploads")
+  ) {
     const backendUrl = process.env.API_URL || "http://localhost:8000";
     const targetUrl = new URL(
       request.nextUrl.pathname + request.nextUrl.search,
