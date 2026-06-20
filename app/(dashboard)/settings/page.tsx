@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import SettingsClient from "@/components/settings/SettingsClient";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getAuditLogs } from "@/services/settings";
+import { getUserProfile } from "@/services/user";
 
 export default function SettingsPage() {
   return (
@@ -48,5 +49,12 @@ async function SettingsContent() {
     throw err;
   }
 
-  return <SettingsClient initialLogs={logs} />;
+  let profile = { name: "Administrator", email: "" };
+  try {
+    profile = await getUserProfile();
+  } catch (err) {
+    console.error("Failed to load user profile:", err);
+  }
+
+  return <SettingsClient initialLogs={logs} profile={profile} />;
 }

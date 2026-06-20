@@ -1,7 +1,8 @@
-import { Bell, Search } from "lucide-react";
+import { Bell } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { DebouncedSearch } from "@/components/dashboard/DebouncedSearch";
 import { DownloadCsvButton } from "@/components/dashboard/DownloadCsvButton";
 import { ApproveButton } from "@/components/retailers/ApproveButton";
 import { PendingRetailerActions } from "@/components/retailers/PendingRetailerActions";
@@ -115,18 +116,8 @@ async function PendingApprovalsContent({
 
   return (
     <>
-      {/* Search and Action Bar */}
       <div className="flex items-center justify-between gap-4 flex-wrap w-full">
-        <form method="GET" className="relative w-full max-w-[360px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#868686]" />
-          <input
-            type="text"
-            name="search"
-            defaultValue={query}
-            placeholder="Search for retailers"
-            className="w-full h-11 pl-11 pr-4 bg-white border border-[#E5E5E5] rounded-[8px] text-sm text-black placeholder:text-[#868686] focus:outline-none focus:border-[#627426]/50 transition-colors"
-          />
-        </form>
+        <DebouncedSearch placeholder="Search for retailers..." />
         <DownloadCsvButton
           filename="pending-retailers.csv"
           headers={[

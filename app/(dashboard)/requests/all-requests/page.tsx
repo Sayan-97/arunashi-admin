@@ -1,14 +1,9 @@
-import {
-  Bell,
-  ChevronLeft,
-  ChevronRight,
-  MoreVertical,
-  Search,
-} from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, MoreVertical } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { DebouncedSearch } from "@/components/dashboard/DebouncedSearch";
 import { DownloadCsvButton } from "@/components/dashboard/DownloadCsvButton";
 import { ViewRequestButton } from "@/components/dashboard/ViewRequestButton";
 import { getAuthCookieHeader } from "@/lib/auth";
@@ -142,18 +137,7 @@ async function AllRequestsContent({
     <>
       {/* Search and Action Bar */}
       <div className="flex items-center justify-between gap-4 flex-wrap w-full">
-        <form method="GET" className="relative w-full max-w-[360px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#868686]" />
-          <input
-            type="text"
-            name="search"
-            defaultValue={query}
-            placeholder="Search for requests"
-            className="w-full h-11 pl-11 pr-4 bg-white border border-[#E5E5E5] rounded-[8px] text-sm text-black placeholder:text-[#868686] focus:outline-none focus:border-[#627426]/50 transition-colors"
-          />
-          {/* Preserve page param on new search */}
-          <input type="hidden" name="page" value="1" />
-        </form>
+        <DebouncedSearch placeholder="Search for requests..." />
         <DownloadCsvButton
           filename="all-requests.csv"
           headers={[
