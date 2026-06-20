@@ -2,6 +2,7 @@ import { Bell, MoreVertical, Search } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { DownloadCsvButton } from "@/components/dashboard/DownloadCsvButton";
 import { ApproveButton } from "@/components/retailers/ApproveButton";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getPendingApprovals } from "@/services/retailers";
@@ -106,17 +107,36 @@ async function PendingApprovalsContent({
 
   return (
     <>
-      {/* Search Bar */}
-      <form method="GET" className="relative w-full max-w-[360px]">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#868686]" />
-        <input
-          type="text"
-          name="search"
-          defaultValue={query}
-          placeholder="Search for retailers"
-          className="w-full h-11 pl-11 pr-4 bg-white border border-[#E5E5E5] rounded-[8px] text-sm text-black placeholder:text-[#868686] focus:outline-none focus:border-[#627426]/50 transition-colors"
+      {/* Search and Action Bar */}
+      <div className="flex items-center justify-between gap-4 flex-wrap w-full">
+        <form method="GET" className="relative w-full max-w-[360px]">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#868686]" />
+          <input
+            type="text"
+            name="search"
+            defaultValue={query}
+            placeholder="Search for retailers"
+            className="w-full h-11 pl-11 pr-4 bg-white border border-[#E5E5E5] rounded-[8px] text-sm text-black placeholder:text-[#868686] focus:outline-none focus:border-[#627426]/50 transition-colors"
+          />
+        </form>
+        <DownloadCsvButton
+          filename="pending-retailers.csv"
+          headers={[
+            "Retailer Name",
+            "Phone",
+            "Business Name",
+            "Email",
+            "Date Applied",
+          ]}
+          rows={filteredRetailers.map((r) => [
+            r.name,
+            r.phone || "",
+            r.company || "",
+            r.email,
+            r.createdAt,
+          ])}
         />
-      </form>
+      </div>
 
       {/* Table Container */}
       <div className="bg-white border border-[#EEEEEE] rounded-[10px] shadow-sm overflow-hidden flex flex-col">
