@@ -239,9 +239,16 @@ export default function MagazinesPage() {
                           )}
                           <div className="flex-1 flex flex-col justify-between">
                             <div className="flex items-start justify-between mb-4">
-                              <h3 className="font-medium text-[16px] text-[#111111]">
-                                {monthName} {y}
-                              </h3>
+                              <div>
+                                <h3 className="font-medium text-[16px] text-[#111111]">
+                                  {monthName} {y}
+                                </h3>
+                                {mag.issueNumber && (
+                                  <p className="text-[12px] text-[#868686] mt-1">
+                                    Issue No. {mag.issueNumber}
+                                  </p>
+                                )}
+                              </div>
                               <div className="flex gap-1">
                                 <button
                                   type="button"
