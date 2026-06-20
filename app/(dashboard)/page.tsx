@@ -1,12 +1,14 @@
-import { Bell, FileText, RefreshCw, Search, UserPlus } from "lucide-react";
+import { FileText, RefreshCw, UserPlus } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { SyncButton } from "@/components/dashboard/SyncButton";
+import { UserMenu } from "@/components/dashboard/UserMenu";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getAllProductRequests } from "@/services/requests";
 import { getPendingApprovals } from "@/services/retailers";
+import { getUserProfile } from "@/services/user";
 
 interface Retailer {
   id: string;
@@ -33,30 +35,14 @@ interface ProductRequest {
 export default function DashboardHomePage() {
   return (
     <div className="flex-1 flex flex-col bg-white">
-      {/* Top Header */}
-      <header className="h-[84px] shrink-0 border-b border-[#EEEEEE] px-10 flex items-center justify-between">
-        {/* Search Bar - Targets the pending approvals search functionality */}
-        <form
-          action="/retailers/pending-approvals"
-          method="GET"
-          className="relative w-full max-w-[360px] mx-auto lg:mx-0"
-        >
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#868686]" />
-          <input
-            type="text"
-            name="search"
-            placeholder="Search for retailers"
-            className="w-full h-11 pl-11 pr-4 bg-white border border-[#E5E5E5] rounded-[8px] text-sm text-black placeholder:text-[#868686] focus:outline-none focus:border-[#627426]/50 transition-colors"
-          />
-        </form>
-
-        <button
-          type="button"
-          className="p-2 text-[#3a3a3a] hover:text-black transition-colors rounded-full hover:bg-gray-50"
-        >
-          <Bell className="size-5" />
-        </button>
-      </header>
+      {/* Top Header wrapped in Suspense to isolate dynamic profile fetch */}
+      <Suspense
+        fallback={
+          <header className="h-[84px] shrink-0 border-b border-[#EEEEEE] px-10 flex items-center justify-end bg-white" />
+        }
+      >
+        <DashboardHeader />
+      </Suspense>
 
       {/* Main Content Area with Suspense boundary to prevent Blocking Route errors */}
       <main className="flex-1 p-10 space-y-10 overflow-y-auto bg-[#FAF9F6]/30">
@@ -77,6 +63,26 @@ export default function DashboardHomePage() {
         </Suspense>
       </main>
     </div>
+  );
+}
+
+async function DashboardHeader() {
+  let profile = { name: "Admin", email: "admin@arunashi.com" };
+  try {
+    profile = await getUserProfile();
+  } catch (err: any) {
+    if (err.message === "Unauthorized") {
+      const cookieStore = await cookies();
+      cookieStore.delete("arunashiAdminAccessToken");
+      cookieStore.delete("arunashiAdminRefreshToken");
+      redirect("/login");
+    }
+  }
+
+  return (
+    <header className="h-[84px] shrink-0 border-b border-[#EEEEEE] px-10 flex items-center justify-end bg-white">
+      <UserMenu name={profile.name} email={profile.email} />
+    </header>
   );
 }
 
