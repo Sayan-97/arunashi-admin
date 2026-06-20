@@ -1,6 +1,7 @@
 import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
 import { ProductActions } from "@/components/products/ProductActions";
 import { ProductSearch } from "@/components/products/ProductSearch";
 import { SyncButton } from "@/components/products/SyncButton";
@@ -126,12 +127,7 @@ async function AllProductsContent({
         </div>
         <div className="flex items-center gap-4">
           <SyncButton />
-          <button
-            type="button"
-            className="p-2 text-[#3a3a3a] hover:text-black transition-colors rounded-full hover:bg-gray-50"
-          >
-            <Bell className="size-5" />
-          </button>
+          <NotificationMenu />
         </div>
       </header>
 

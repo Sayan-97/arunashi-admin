@@ -1,9 +1,9 @@
-import { Bell } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { DebouncedSearch } from "@/components/dashboard/DebouncedSearch";
 import { DownloadCsvButton } from "@/components/dashboard/DownloadCsvButton";
+import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
 import { ViewRetailerButton } from "@/components/retailers/ViewRetailerButton";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getApprovedRetailers } from "@/services/retailers";
@@ -35,12 +35,7 @@ export default function ApprovedRetailersPage({
         <h1 className="text-2xl font-medium text-[#111111] font-sans">
           Approved Retailers
         </h1>
-        <button
-          type="button"
-          className="p-2 text-[#3a3a3a] hover:text-black transition-colors rounded-full hover:bg-gray-50"
-        >
-          <Bell className="size-5" />
-        </button>
+        <NotificationMenu />
       </header>
 
       {/* Main Content */}

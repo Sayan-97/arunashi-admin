@@ -1,9 +1,9 @@
-import { Bell } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { DebouncedSearch } from "@/components/dashboard/DebouncedSearch";
 import { DownloadCsvButton } from "@/components/dashboard/DownloadCsvButton";
+import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
 import { ApproveButton } from "@/components/retailers/ApproveButton";
 import { PendingRetailerActions } from "@/components/retailers/PendingRetailerActions";
 import { getAuthCookieHeader } from "@/lib/auth";
@@ -37,12 +37,7 @@ export default function PendingApprovalsPage({
         <h1 className="text-2xl font-medium text-[#111111] font-sans">
           Pending Retailers Approvals
         </h1>
-        <button
-          type="button"
-          className="p-2 text-[#3a3a3a] hover:text-black transition-colors rounded-full hover:bg-gray-50"
-        >
-          <Bell className="size-5" />
-        </button>
+        <NotificationMenu />
       </header>
 
       {/* Main Content */}

@@ -1,6 +1,7 @@
 import { Bell, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
 import { ProductActions } from "@/components/products/ProductActions";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getShopifyProducts } from "@/services/products";
@@ -124,12 +125,7 @@ async function ActiveProductsContent({
             {activeCount} Active
           </span>
         </div>
-        <button
-          type="button"
-          className="p-2 text-[#3a3a3a] hover:text-black transition-colors rounded-full hover:bg-gray-50"
-        >
-          <Bell className="size-5" />
-        </button>
+        <NotificationMenu />
       </header>
 
       {/* Main Content */}

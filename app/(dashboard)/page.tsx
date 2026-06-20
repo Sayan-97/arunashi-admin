@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
 import { SyncButton } from "@/components/dashboard/SyncButton";
 import { UserMenu } from "@/components/dashboard/UserMenu";
 import { getAuthCookieHeader } from "@/lib/auth";
@@ -38,7 +39,7 @@ export default function DashboardHomePage() {
       {/* Top Header wrapped in Suspense to isolate dynamic profile fetch */}
       <Suspense
         fallback={
-          <header className="h-[84px] shrink-0 border-b border-[#EEEEEE] px-10 flex items-center justify-end bg-white" />
+          <header className="h-[84px] shrink-0 border-b border-[#EEEEEE] px-10 flex items-center justify-end bg-white gap-4" />
         }
       >
         <DashboardHeader />
@@ -80,7 +81,8 @@ async function DashboardHeader() {
   }
 
   return (
-    <header className="h-[84px] shrink-0 border-b border-[#EEEEEE] px-10 flex items-center justify-end bg-white">
+    <header className="h-[84px] shrink-0 border-b border-[#EEEEEE] px-10 flex items-center justify-end bg-white gap-4">
+      <NotificationMenu />
       <UserMenu name={profile.name} email={profile.email} />
     </header>
   );

@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  Bell,
-  Edit,
-  Link as LinkIcon,
-  Loader2,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { Edit, Link as LinkIcon, Loader2, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
 
 interface Banner {
   id: string;
@@ -188,12 +182,7 @@ export default function BannersPage() {
             <Plus className="size-4" />
             Add Banner
           </button>
-          <button
-            type="button"
-            className="p-2 text-[#3a3a3a] hover:text-black transition-colors rounded-full hover:bg-gray-50"
-          >
-            <Bell className="size-5" />
-          </button>
+          <NotificationMenu />
         </div>
       </header>
 

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
 import SettingsClient from "@/components/settings/SettingsClient";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getAuditLogs } from "@/services/settings";
@@ -14,6 +15,7 @@ export default function SettingsPage() {
         <h1 className="text-2xl font-medium text-[#111111] font-sans">
           Settings
         </h1>
+        <NotificationMenu />
       </header>
 
       {/* Main Content */}
