@@ -1,7 +1,9 @@
-import { Bell, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ProductActions } from "@/components/products/ProductActions";
+import { ProductSearch } from "@/components/products/ProductSearch";
+import { SyncButton } from "@/components/products/SyncButton";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getShopifyProducts } from "@/services/products";
 
@@ -82,14 +84,10 @@ async function AllProductsContent({
     await getAuthCookieHeader(),
   );
 
-  // Filter for only active products
-  const activeProducts = products.filter(
-    (product) => product.status?.toLowerCase() === "active",
-  );
-  const activeCount = activeProducts.length;
+  const activeCount = products.length;
 
   // Filter by query (title, handle, vendor, type, SKU)
-  const filteredProducts = activeProducts.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const q = query.toLowerCase();
     const matchesSku = product.variants?.some((v) =>
       (v.sku || "").toLowerCase().includes(q),
@@ -126,29 +124,21 @@ async function AllProductsContent({
             {activeCount} Total
           </span>
         </div>
-        <button
-          type="button"
-          className="p-2 text-[#3a3a3a] hover:text-black transition-colors rounded-full hover:bg-gray-50"
-        >
-          <Bell className="size-5" />
-        </button>
+        <div className="flex items-center gap-4">
+          <SyncButton />
+          <button
+            type="button"
+            className="p-2 text-[#3a3a3a] hover:text-black transition-colors rounded-full hover:bg-gray-50"
+          >
+            <Bell className="size-5" />
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 p-10 space-y-6 overflow-y-auto bg-[#FAF9F6]/30">
         {/* Search Bar */}
-        <form method="GET" className="relative w-full max-w-[360px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-[#868686]" />
-          <input
-            type="text"
-            name="search"
-            defaultValue={query}
-            placeholder="Search products..."
-            className="w-full h-11 pl-11 pr-4 bg-white border border-[#E5E5E5] rounded-[8px] text-sm text-black placeholder:text-[#868686] focus:outline-none focus:border-[#627426]/50 transition-colors"
-          />
-          {/* Preserve page param on new search */}
-          <input type="hidden" name="page" value="1" />
-        </form>
+        <ProductSearch />
 
         {/* Table Container */}
         <div className="bg-white border border-[#EEEEEE] rounded-[10px] shadow-sm overflow-hidden flex flex-col">

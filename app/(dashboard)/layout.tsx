@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Sidebar from "@/components/layout/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -10,7 +11,13 @@ export default function DashboardLayout({
     <body>
       <Toaster />
       <div className="flex h-screen overflow-hidden bg-white">
-        <Sidebar />
+        <Suspense
+          fallback={
+            <div className="w-[280px] shrink-0 border-r border-[#EEEEEE] flex flex-col h-screen bg-white" />
+          }
+        >
+          <Sidebar />
+        </Suspense>
         <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-white">
           {children}
         </main>
