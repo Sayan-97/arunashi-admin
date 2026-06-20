@@ -41,6 +41,20 @@ export default function DiamondsPage() {
     fetchDiamonds();
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchDiamonds only runs once to setup listener
+  useEffect(() => {
+    const handleRealtime = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail.type === "diamonds:updated") {
+        fetchDiamonds();
+      }
+    };
+    window.addEventListener("realtime-sync", handleRealtime);
+    return () => {
+      window.removeEventListener("realtime-sync", handleRealtime);
+    };
+  }, []);
+
   const openEditModal = (diamond: Diamond) => {
     setName(diamond.name);
     setLink(diamond.link);

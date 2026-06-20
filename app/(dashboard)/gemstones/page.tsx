@@ -41,6 +41,20 @@ export default function GemstonesPage() {
     fetchGemstones();
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchGemstones only runs once to setup listener
+  useEffect(() => {
+    const handleRealtime = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail.type === "gemstones:updated") {
+        fetchGemstones();
+      }
+    };
+    window.addEventListener("realtime-sync", handleRealtime);
+    return () => {
+      window.removeEventListener("realtime-sync", handleRealtime);
+    };
+  }, []);
+
   const openEditModal = (gemstone: Gemstone) => {
     setName(gemstone.name);
     setLink(gemstone.link);

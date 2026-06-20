@@ -52,6 +52,20 @@ export default function BannersPage() {
     fetchBanners();
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchBanners only runs once to setup listener
+  useEffect(() => {
+    const handleRealtime = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail.type === "banners:updated") {
+        fetchBanners();
+      }
+    };
+    window.addEventListener("realtime-sync", handleRealtime);
+    return () => {
+      window.removeEventListener("realtime-sync", handleRealtime);
+    };
+  }, []);
+
   const openEditModal = (banner: Banner) => {
     setLink(banner.link || "");
     setIsActive(banner.isActive);
@@ -316,7 +330,7 @@ export default function BannersPage() {
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
+                    if (e.target.files?.[0]) {
                       setImageFile(e.target.files[0]);
                     }
                   }}

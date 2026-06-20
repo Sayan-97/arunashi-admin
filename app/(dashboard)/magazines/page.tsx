@@ -47,6 +47,20 @@ export default function MagazinesPage() {
     fetchMagazines();
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchMagazines only runs once to setup listener
+  useEffect(() => {
+    const handleRealtime = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail.type === "magazines:updated") {
+        fetchMagazines();
+      }
+    };
+    window.addEventListener("realtime-sync", handleRealtime);
+    return () => {
+      window.removeEventListener("realtime-sync", handleRealtime);
+    };
+  }, []);
+
   const openEditModal = (mag: Magazine) => {
     const d = new Date(mag.date);
     setMonth((d.getMonth() + 1).toString());

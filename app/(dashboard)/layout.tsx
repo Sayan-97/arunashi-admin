@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import RealtimeSyncListener from "@/components/dashboard/RealtimeSyncListener";
 import Sidebar from "@/components/layout/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -10,6 +11,7 @@ export default function DashboardLayout({
   return (
     <body>
       <Toaster />
+      <RealtimeSyncListener />
       <div className="flex h-screen overflow-hidden bg-white">
         <Suspense
           fallback={
