@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
+import { approveRetailer } from "@/actions/retailers";
 import {
   Dialog,
   DialogClose,
@@ -18,16 +20,59 @@ interface Retailer {
   company: string | null;
   phone: string | null;
   address: string | null;
-  press_title: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  zipcode?: string | null;
+  press_title?: string | null;
+  pressTitle?: string | null;
   createdAt: string;
 }
 
 interface ViewRetailerButtonProps {
   retailer: Retailer;
+  showApproveButton?: boolean;
+  trigger?: React.ReactNode | null;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function ViewRetailerButton({ retailer }: ViewRetailerButtonProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function ViewRetailerButton({
+  retailer,
+  showApproveButton = false,
+  trigger,
+  open,
+  onOpenChange,
+}: ViewRetailerButtonProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
+
+  const isOpen = open !== undefined ? open : internalOpen;
+  const setIsOpen = onOpenChange !== undefined ? onOpenChange : setInternalOpen;
+
+  const handleApprove = async () => {
+    setIsApproving(true);
+    try {
+      const res = await approveRetailer(retailer.id);
+      if (res.error) {
+        toast.error(res.error, {
+          position: "top-right",
+        });
+      } else {
+        toast.success("Retailer approved successfully!", {
+          position: "top-right",
+        });
+        setIsOpen(false);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("An unexpected error occurred", {
+        position: "top-right",
+      });
+    } finally {
+      setIsApproving(false);
+    }
+  };
 
   const formatDate = (dateStr: string) => {
     try {
@@ -46,14 +91,18 @@ export function ViewRetailerButton({ retailer }: ViewRetailerButtonProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <button
-          type="button"
-          className="h-8 px-4 rounded-[6px] border border-[#bec36c] text-[#627426] hover:bg-[#627426] hover:text-white transition-all text-xs font-semibold cursor-pointer"
-        >
-          View
-        </button>
-      </DialogTrigger>
+      {trigger !== null && (
+        <DialogTrigger asChild>
+          {trigger || (
+            <button
+              type="button"
+              className="h-8 px-4 rounded-[6px] border border-[#bec36c] text-[#627426] hover:bg-[#627426] hover:text-white transition-all text-xs font-semibold cursor-pointer"
+            >
+              View
+            </button>
+          )}
+        </DialogTrigger>
+      )}
       <DialogContent
         showCloseButton={true}
         className="sm:max-w-2xl bg-white border border-[#EEEEEE] rounded-[10px] p-6 max-h-[90vh] flex flex-col gap-5 overflow-hidden shadow-xl"
@@ -63,7 +112,8 @@ export function ViewRetailerButton({ retailer }: ViewRetailerButtonProps) {
             Retailer Details
           </DialogTitle>
           <DialogDescription className="text-xs text-[#868686] font-mono uppercase tracking-wider">
-            Approved on {formatDate(retailer.createdAt)}
+            {showApproveButton ? "Applied on" : "Approved on"}{" "}
+            {formatDate(retailer.createdAt)}
           </DialogDescription>
         </DialogHeader>
 
@@ -108,7 +158,7 @@ export function ViewRetailerButton({ retailer }: ViewRetailerButtonProps) {
                   Press / Job Title
                 </span>
                 <span className="font-semibold text-[#111111] block mt-1 text-[15px]">
-                  {retailer.press_title || "N/A"}
+                  {retailer.press_title || retailer.pressTitle || "N/A"}
                 </span>
               </div>
               <div className="md:col-span-2">
@@ -118,6 +168,21 @@ export function ViewRetailerButton({ retailer }: ViewRetailerButtonProps) {
                 <span className="font-semibold text-[#111111] block mt-1 text-[15px] whitespace-pre-wrap leading-relaxed">
                   {retailer.address || "N/A"}
                 </span>
+                {(retailer.city ||
+                  retailer.state ||
+                  retailer.country ||
+                  retailer.zipcode) && (
+                  <span className="text-xs text-[#555555] block mt-1 font-medium">
+                    {[
+                      retailer.city,
+                      retailer.state,
+                      retailer.zipcode,
+                      retailer.country,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -125,6 +190,16 @@ export function ViewRetailerButton({ retailer }: ViewRetailerButtonProps) {
 
         {/* Footer actions */}
         <div className="border-t border-[#EEEEEE] pt-4 flex items-center justify-end gap-3 select-none">
+          {showApproveButton && (
+            <button
+              type="button"
+              onClick={handleApprove}
+              disabled={isApproving}
+              className="h-10 px-5 rounded-[6px] bg-[#627426] text-white hover:bg-[#627426]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-semibold cursor-pointer"
+            >
+              {isApproving ? "Approving..." : "Approve Retailer"}
+            </button>
+          )}
           <DialogClose asChild>
             <button
               type="button"

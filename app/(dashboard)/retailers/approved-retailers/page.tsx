@@ -14,6 +14,10 @@ interface Retailer {
   company: string | null;
   phone: string | null;
   address: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  zipcode?: string | null;
   press_title: string | null;
   createdAt: string;
 }
@@ -129,6 +133,10 @@ async function ApprovedRetailersContent({
             "Business Name",
             "Email",
             "Address",
+            "City",
+            "State",
+            "Country",
+            "Zip Code",
             "Press Title",
             "Date Joined",
           ]}
@@ -138,6 +146,10 @@ async function ApprovedRetailersContent({
             r.company || "",
             r.email,
             r.address || "",
+            r.city || "",
+            r.state || "",
+            r.country || "",
+            r.zipcode || "",
             r.press_title || "",
             r.createdAt,
           ])}

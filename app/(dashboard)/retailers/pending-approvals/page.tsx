@@ -1,9 +1,10 @@
-import { Bell, MoreVertical, Search } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { DownloadCsvButton } from "@/components/dashboard/DownloadCsvButton";
 import { ApproveButton } from "@/components/retailers/ApproveButton";
+import { PendingRetailerActions } from "@/components/retailers/PendingRetailerActions";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getPendingApprovals } from "@/services/retailers";
 
@@ -13,6 +14,13 @@ interface Retailer {
   phone: string;
   company: string;
   email: string;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  zipcode?: string | null;
+  pressTitle?: string | null;
+  press_title?: string | null;
   createdAt: string;
 }
 
@@ -126,6 +134,12 @@ async function PendingApprovalsContent({
             "Phone",
             "Business Name",
             "Email",
+            "Address",
+            "City",
+            "State",
+            "Country",
+            "Zip Code",
+            "Press Title",
             "Date Applied",
           ]}
           rows={filteredRetailers.map((r) => [
@@ -133,6 +147,12 @@ async function PendingApprovalsContent({
             r.phone || "",
             r.company || "",
             r.email,
+            r.address || "",
+            r.city || "",
+            r.state || "",
+            r.country || "",
+            r.zipcode || "",
+            r.pressTitle || r.press_title || "",
             r.createdAt,
           ])}
         />
@@ -202,12 +222,7 @@ async function PendingApprovalsContent({
                     <td className="py-5 px-6 align-middle text-right lg:text-left">
                       <div className="inline-flex items-center gap-3">
                         <ApproveButton retailerId={retailer.id} />
-                        <button
-                          type="button"
-                          className="p-1.5 text-[#868686] hover:text-black transition-colors rounded-full hover:bg-gray-100"
-                        >
-                          <MoreVertical className="size-[18px]" />
-                        </button>
+                        <PendingRetailerActions retailer={retailer} />
                       </div>
                     </td>
                   </tr>
