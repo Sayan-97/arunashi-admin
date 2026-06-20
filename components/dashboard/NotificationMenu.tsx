@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, BellOff, CheckCheck, Trash2 } from "lucide-react";
+import { Bell, BellOff, CheckCheck, Loader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -18,69 +18,44 @@ export function NotificationMenu() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Load from localStorage on mount
+  // Fetch initial notifications from database on mount
   useEffect(() => {
-    const saved = localStorage.getItem("arunashi_admin_notifications");
-    if (saved) {
+    const fetchNotifications = async () => {
       try {
-        setNotifications(JSON.parse(saved));
+        const res = await fetch("/api/notifications");
+        if (!res.ok) throw new Error("Failed to fetch notifications");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setNotifications(json.data);
+        }
       } catch (err) {
-        console.error("Failed to parse notifications from localStorage", err);
+        console.error("Failed to load notifications from database:", err);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+    fetchNotifications();
   }, []);
 
-  // Save to localStorage helper
-  const saveNotifications = (updated: NotificationItem[]) => {
-    setNotifications(updated);
-    localStorage.setItem(
-      "arunashi_admin_notifications",
-      JSON.stringify(updated),
-    );
-  };
-
-  // Listen to realtime custom browser events
+  // Listen to realtime custom browser events (SSE broadcasts)
   useEffect(() => {
     const handleRealtime = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (!detail) return;
 
-      let newNotification: NotificationItem | null = null;
-
-      if (detail.type === "retailers:submitted") {
-        newNotification = {
-          id: detail.data?.id || `retailer-${Date.now()}`,
-          type: "retailer_request",
-          title: "New Retailer Registration",
-          message: `${detail.data?.name || "A retailer"} (${detail.data?.company || "N/A"}) has submitted an onboarding request.`,
-          link: "/retailers/pending-approvals",
-          createdAt: new Date().toISOString(),
-          read: false,
-        };
-      } else if (detail.type === "requests:submitted") {
-        newNotification = {
-          id: detail.data?.id || `request-${Date.now()}`,
-          type: "product_request",
-          title: "New Product Request",
-          message: `Product linesheet request submitted by ${detail.data?.user?.company || detail.data?.user?.name || "a retailer"}.`,
-          link: "/requests/pending-requests",
-          createdAt: new Date().toISOString(),
-          read: false,
-        };
-      }
-
-      if (newNotification) {
-        const itemToAdd = newNotification;
-        setNotifications((prev) => {
-          const updated = [itemToAdd, ...prev];
-          localStorage.setItem(
-            "arunashi_admin_notifications",
-            JSON.stringify(updated),
-          );
-          return updated;
-        });
+      // When a new database notification is created and broadcasted by the server
+      if (detail.type === "notification:created") {
+        const newNotification = detail.data;
+        if (newNotification) {
+          setNotifications((prev) => {
+            // Prevent duplicate entries in the list
+            if (prev.some((n) => n.id === newNotification.id)) return prev;
+            return [newNotification, ...prev];
+          });
+        }
       }
     };
 
@@ -103,22 +78,65 @@ export function NotificationMenu() {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAllAsRead = () => {
-    const updated = notifications.map((n) => ({ ...n, read: true }));
-    saveNotifications(updated);
+  const markAllAsRead = async () => {
+    // Optimistic update
+    const original = [...notifications];
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+
+    try {
+      const res = await fetch("/api/notifications/read-all", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) throw new Error("Failed to mark all as read");
+    } catch (err) {
+      console.error(err);
+      // Revert if API fails
+      setNotifications(original);
+    }
   };
 
-  const handleNotificationClick = (item: NotificationItem) => {
-    const updated = notifications.map((n) =>
-      n.id === item.id ? { ...n, read: true } : n,
+  const handleNotificationClick = async (item: NotificationItem) => {
+    const original = [...notifications];
+
+    // Optimistic update
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === item.id ? { ...n, read: true } : n)),
     );
-    saveNotifications(updated);
     setIsOpen(false);
     router.push(item.link);
+
+    if (!item.read) {
+      try {
+        const res = await fetch(`/api/notifications/${item.id}/read`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!res.ok) throw new Error("Failed to mark notification as read");
+      } catch (err) {
+        console.error(err);
+        // Revert if API fails
+        setNotifications(original);
+      }
+    }
   };
 
-  const clearAll = () => {
-    saveNotifications([]);
+  const clearAll = async () => {
+    // Optimistic update
+    const original = [...notifications];
+    setNotifications([]);
+
+    try {
+      const res = await fetch("/api/notifications", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) throw new Error("Failed to clear notification history");
+    } catch (err) {
+      console.error(err);
+      // Revert if API fails
+      setNotifications(original);
+    }
   };
 
   const formatRelativeTime = (isoString: string) => {
@@ -182,7 +200,11 @@ export function NotificationMenu() {
 
           {/* List Content */}
           <div className="max-h-72 overflow-y-auto bg-[#FAF9F6]/20 divide-y divide-[#EEEEEE]">
-            {notifications.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-10">
+                <Loader2 className="size-5 animate-spin text-[#868686]" />
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
                 <BellOff className="size-8 text-[#868686] opacity-40 mb-2" />
                 <p className="text-xs text-[#868686] font-medium">
@@ -224,7 +246,7 @@ export function NotificationMenu() {
           </div>
 
           {/* Footer */}
-          {notifications.length > 0 && (
+          {!loading && notifications.length > 0 && (
             <div className="px-4 py-2 border-t border-[#EEEEEE] flex items-center justify-center bg-white">
               <button
                 type="button"
