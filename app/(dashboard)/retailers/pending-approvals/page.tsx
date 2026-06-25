@@ -6,6 +6,7 @@ import { DownloadCsvButton } from "@/components/dashboard/DownloadCsvButton";
 import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
 import { ApproveButton } from "@/components/retailers/ApproveButton";
 import { PendingRetailerActions } from "@/components/retailers/PendingRetailerActions";
+import { ResendActivationButton } from "@/components/retailers/ResendActivationButton";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getPendingApprovals } from "@/services/retailers";
 
@@ -15,6 +16,7 @@ interface Retailer {
   phone: string;
   company: string;
   email: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
   address?: string | null;
   city?: string | null;
   state?: string | null;
@@ -120,6 +122,7 @@ async function PendingApprovalsContent({
             "Phone",
             "Business Name",
             "Email",
+            "Status",
             "Address",
             "City",
             "State",
@@ -133,6 +136,7 @@ async function PendingApprovalsContent({
             r.phone || "",
             r.company || "",
             r.email,
+            r.status,
             r.address || "",
             r.city || "",
             r.state || "",
@@ -158,6 +162,9 @@ async function PendingApprovalsContent({
                 </th>
                 <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                   Email
+                </th>
+                <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
+                  Status
                 </th>
                 <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
                   Date Applied
@@ -194,6 +201,19 @@ async function PendingApprovalsContent({
                       {retailer.email}
                     </td>
 
+                    {/* Status Badge */}
+                    <td className="py-5 px-6 align-middle">
+                      {retailer.status === "PENDING" ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FAF9F6] text-[#A69B7C] border border-[#EBE8DF]">
+                          Pending Approval
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EEEEE2] text-[#627426] border border-[#DFDFD3]">
+                          Awaiting Activation
+                        </span>
+                      )}
+                    </td>
+
                     {/* Date Applied */}
                     <td className="py-5 px-6 align-middle">
                       <div className="text-[14px] text-[#3a3a3a]">
@@ -207,7 +227,11 @@ async function PendingApprovalsContent({
                     {/* Actions */}
                     <td className="py-5 px-6 align-middle text-right lg:text-left">
                       <div className="inline-flex items-center gap-3">
-                        <ApproveButton retailerId={retailer.id} />
+                        {retailer.status === "PENDING" ? (
+                          <ApproveButton retailerId={retailer.id} />
+                        ) : (
+                          <ResendActivationButton retailerId={retailer.id} />
+                        )}
                         <PendingRetailerActions retailer={retailer} />
                       </div>
                     </td>
@@ -216,7 +240,7 @@ async function PendingApprovalsContent({
               ) : (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={6}
                     className="py-12 text-center text-sm text-[#868686]"
                   >
                     No pending retailers found.

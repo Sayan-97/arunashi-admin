@@ -31,3 +31,31 @@ export async function approveRetailer(id: string) {
     return { error: "Failed to connect to authentication server" };
   }
 }
+
+export async function resendActivationEmail(id: string) {
+  const backendUrl = process.env.API_URL || "http://localhost:8000";
+
+  try {
+    const res = await fetch(
+      `${backendUrl}/api/admin/registrations/${id}/resend-activation`,
+      {
+        method: "POST",
+        headers: {
+          Cookie: await getAuthCookieHeader(),
+        },
+      },
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return { error: data.message || "Failed to resend activation link" };
+    }
+
+    updateTag("pending-approvals");
+    return { success: true };
+  } catch (error) {
+    console.error("Resend Activation Email Action Error:", error);
+    return { error: "Failed to connect to authentication server" };
+  }
+}

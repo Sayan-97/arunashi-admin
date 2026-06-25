@@ -46,6 +46,8 @@ export default function RealtimeSyncListener() {
           tagsToRevalidate.push("pending-approvals");
         } else if (payload.type === "retailers:approved") {
           tagsToRevalidate.push("pending-approvals", "approved-retailers");
+        } else if (payload.type === "retailers:activated") {
+          tagsToRevalidate.push("pending-approvals", "approved-retailers");
         } else if (
           payload.type === "requests:submitted" ||
           payload.type === "requests:updated"
@@ -63,6 +65,16 @@ export default function RealtimeSyncListener() {
               action: {
                 label: "View Request",
                 onClick: () => router.push("/retailers/pending-approvals"),
+              },
+            },
+          );
+        } else if (payload.type === "retailers:activated") {
+          toast.success(
+            `Retailer ${payload.data?.email || "onboarding"} has completed account activation.`,
+            {
+              action: {
+                label: "View Retailer",
+                onClick: () => router.push("/retailers/approved-retailers"),
               },
             },
           );
