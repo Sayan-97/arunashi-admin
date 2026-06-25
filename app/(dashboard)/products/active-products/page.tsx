@@ -2,7 +2,7 @@ import { Bell, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
-import { ProductActions } from "@/components/products/ProductActions";
+import { ProductStatusToggle } from "@/components/products/ProductStatusToggle";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getShopifyProducts } from "@/services/products";
 
@@ -248,26 +248,26 @@ async function ActiveProductsContent({
                         </td>
 
                         {/* Price */}
-                        <td className="py-5 px-6 align-middle font-semibold text-[15px] text-[#111111] font-mono">
+                        <td className="py-5 px-6 align-middle font-semibold text-[15px] text-[#111111] font-sans">
                           {formattedPrice}
                         </td>
 
                         {/* Status */}
                         <td className="py-5 px-6 align-middle">
-                          <span
-                            className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase ${
-                              product.isActivated
-                                ? "bg-green-100 text-green-700"
-                                : "bg-gray-100 text-gray-700"
-                            }`}
-                          >
-                            {product.isActivated ? "Active" : "Inactive"}
-                          </span>
+                          <ProductStatusToggle
+                            productId={product.id}
+                            isActivated={!!product.isActivated}
+                          />
                         </td>
 
                         {/* Actions */}
-                        <td className="py-5 px-6 align-middle text-right relative">
-                          <ProductActions product={product} />
+                        <td className="py-5 px-6 align-middle text-right">
+                          <Link
+                            href={`/products/${product.id}`}
+                            className="h-8 px-4 rounded-[6px] border border-[#bec36c] text-[#627426] hover:bg-[#627426] hover:text-white transition-all text-xs font-semibold cursor-pointer inline-flex items-center justify-center min-w-[70px]"
+                          >
+                            View
+                          </Link>
                         </td>
                       </tr>
                     );

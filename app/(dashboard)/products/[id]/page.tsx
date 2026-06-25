@@ -9,7 +9,7 @@ import { LinesheetForm } from "./linesheet-form";
 export default function ProductDetailsPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }) {
   return (
     <Suspense
@@ -39,13 +39,11 @@ export default function ProductDetailsPage({
 async function ProductDetailsContent({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const { slug } = await params;
+  const { id } = await params;
   const products = await getShopifyProducts(await getAuthCookieHeader());
-  const product = products.find(
-    (p: any) => p.handle === slug || String(p.id) === slug,
-  );
+  const product = products.find((p: any) => String(p.id) === id);
 
   if (!product) {
     return notFound();
@@ -257,7 +255,7 @@ async function ProductDetailsContent({
                           <td className="py-3 px-4 text-mono text-gray-500">
                             {variant.sku || "N/A"}
                           </td>
-                          <td className="py-3 px-4 font-semibold font-mono text-[#111111]">
+                          <td className="py-3 px-4 font-semibold font-sans text-[#111111]">
                             {new Intl.NumberFormat("en-US", {
                               style: "currency",
                               currency: "USD",
