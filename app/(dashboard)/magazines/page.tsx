@@ -201,13 +201,13 @@ export default function MagazinesPage() {
             No magazines added yet.
           </div>
         ) : (
-          <div className="max-w-5xl space-y-12">
+          <div className="w-full space-y-12">
             {sortedYears.map((y) => (
               <div key={y} className="space-y-4">
                 <h2 className="text-xl font-semibold text-[#111111] border-b border-[#EEEEEE] pb-2">
                   {y}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-10">
                   {groupedMagazines[y]
                     .sort(
                       (a, b) =>
@@ -222,7 +222,7 @@ export default function MagazinesPage() {
                       return (
                         <div
                           key={mag.id}
-                          className="bg-white border border-[#EEEEEE] rounded-[10px] p-5 shadow-sm flex flex-col group hover:shadow-md transition-shadow gap-4"
+                          className="w-full sm:w-[340px] sm:shrink-0 bg-white border border-[#EEEEEE] rounded-[10px] p-5 shadow-sm flex flex-col group hover:shadow-md transition-shadow gap-4"
                         >
                           {mag.image && (
                             <div className="w-full aspect-[3/4] h-auto rounded-md overflow-hidden bg-[#F8F8F8] shrink-0">

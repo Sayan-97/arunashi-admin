@@ -39,6 +39,9 @@ export default function Sidebar() {
     { label: "Banners", href: "/banners", icon: ImageIcon },
     { label: "Diamonds", href: "/diamonds", icon: Gem },
     { label: "Gemstones", href: "/gemstones", icon: Sparkles },
+    { label: "Terms & Conditions", href: "/terms", icon: FileText },
+    { label: "Privacy Policy", href: "/privacy", icon: FileText },
+    { label: "About Us", href: "/about-us", icon: FileText },
     { label: "Settings", href: "/settings", icon: Settings },
   ];
 
