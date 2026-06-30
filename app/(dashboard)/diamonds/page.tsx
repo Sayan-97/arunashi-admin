@@ -22,6 +22,7 @@ export default function DiamondsPage() {
   // Form state
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
   const fetchDiamonds = async () => {
     try {
@@ -60,6 +61,7 @@ export default function DiamondsPage() {
     setName(diamond.name);
     setLink(diamond.link);
     setEditingId(diamond.id);
+    setFile(null);
     setIsModalOpen(true);
   };
 
@@ -68,12 +70,14 @@ export default function DiamondsPage() {
     setEditingId(null);
     setName("");
     setLink("");
+    setFile(null);
   };
 
   const handleSaveDiamond = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !link) {
-      toast.error("Please fill all required fields");
+
+    if (!editingId && !file) {
+      toast.error("Please select a PDF file to upload");
       return;
     }
 
@@ -82,15 +86,21 @@ export default function DiamondsPage() {
       const url = editingId ? `/api/diamonds/${editingId}` : "/api/diamonds";
       const method = editingId ? "PUT" : "POST";
 
+      const formData = new FormData();
+      formData.append("name", name);
+      if (file) {
+        formData.append("pdf", file);
+      }
+
       const res = await fetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, link }),
+        body: formData,
       });
 
-      if (!res.ok) throw new Error("Failed to save diamond");
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || "Failed to save diamond");
+      }
 
       toast.success(
         editingId
@@ -99,10 +109,11 @@ export default function DiamondsPage() {
       );
       closeAndResetModal();
       fetchDiamonds();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       toast.error(
-        editingId ? "Failed to update diamond" : "Failed to add diamond",
+        (error as Error).message ||
+          (editingId ? "Failed to update diamond" : "Failed to add diamond"),
       );
     } finally {
       setIsSubmitting(false);
@@ -244,30 +255,54 @@ export default function DiamondsPage() {
             <form onSubmit={handleSaveDiamond} className="p-6 space-y-5">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-[#3a3a3a]">
-                  Diamond Shape / Color Name
+                  Diamond Shape / Color Name (Optional)
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Diamond Ashoka Cut"
+                  placeholder="Derived from PDF name if left blank"
                   className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426]"
-                  required
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-[#3a3a3a]">
-                  Canva Link (Embed or Share URL)
+                  {editingId
+                    ? "Upload New PDF File (Optional)"
+                    : "Upload PDF File"}
                 </label>
                 <input
-                  type="url"
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  placeholder="https://www.canva.com/design/..."
-                  className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426]"
-                  required
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) {
+                      setFile(e.target.files[0]);
+                      // If name is empty, auto fill with parsed filename
+                      if (!name) {
+                        const rawName = e.target.files[0].name
+                          .replace(/^diamond\s+/i, "")
+                          .replace(/\.pdf$/i, "")
+                          .trim();
+                        const derivedName = rawName
+                          .split(/\s+/)
+                          .map(
+                            (word) =>
+                              word.charAt(0).toUpperCase() + word.slice(1),
+                          )
+                          .join(" ");
+                        setName(derivedName);
+                      }
+                    }
+                  }}
+                  className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426] flex items-center pt-1.5"
+                  required={!editingId}
                 />
+                {editingId && link && (
+                  <p className="text-xs text-gray-500 truncate mt-1">
+                    Current: {link.split("/").pop()}
+                  </p>
+                )}
               </div>
 
               <div className="pt-2 flex items-center justify-end gap-3">
