@@ -27,6 +27,7 @@ export default function MagazinesPage() {
   const [link, setLink] = useState("");
   const [issueNumber, setIssueNumber] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const fetchMagazines = async () => {
     try {
@@ -80,17 +81,29 @@ export default function MagazinesPage() {
     setLink("");
     setIssueNumber("");
     setImageFile(null);
+    setPdfFile(null);
     setYear(new Date().getFullYear().toString());
   };
 
   const handleAddMagazine = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!month || !year || !link) {
+    if (!month || !year) {
       toast.error("Please fill all required fields");
       return;
     }
-    if (!editingId && !imageFile) {
-      toast.error("Please select an image");
+    if (!editingId && !link && !pdfFile) {
+      toast.error("Please select a PDF file or enter a Canva link");
+      return;
+    }
+    if (
+      !editingId &&
+      !imageFile &&
+      !pdfFile &&
+      (!link || !link.startsWith("/public/uploads/"))
+    ) {
+      toast.error(
+        "Please select a cover image or upload a PDF to auto-generate one",
+      );
       return;
     }
 
@@ -99,10 +112,16 @@ export default function MagazinesPage() {
       const dateStr = `${year}-${month.padStart(2, "0")}-01`;
 
       const formData = new FormData();
-      formData.append("link", link);
       formData.append("date", dateStr);
       if (issueNumber) formData.append("issueNumber", issueNumber);
-      if (imageFile) formData.append("image", imageFile);
+      if (pdfFile) {
+        formData.append("pdf", pdfFile);
+      } else {
+        formData.append("link", link);
+      }
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
 
       const url = editingId ? `/api/magazines/${editingId}` : "/api/magazines";
       const method = editingId ? "PUT" : "POST";
@@ -286,7 +305,11 @@ export default function MagazinesPage() {
                               className="flex items-center gap-2 text-[14px] text-blue-600 hover:text-blue-800 hover:underline truncate"
                             >
                               <LinkIcon className="size-4 shrink-0" />
-                              <span className="truncate">{mag.link}</span>
+                              <span className="truncate">
+                                {mag.link.startsWith("/public/uploads/")
+                                  ? mag.link.split("/").pop()
+                                  : mag.link}
+                              </span>
                             </a>
                           </div>
                         </div>
@@ -366,20 +389,58 @@ export default function MagazinesPage() {
               </div>
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-[#3a3a3a]">
-                  Canva Link
+                  Magazine PDF File
                 </label>
-                <input
-                  type="url"
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  placeholder="https://canva.link/..."
-                  className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426]"
-                  required
-                />
+                {link && link.startsWith("/public/uploads/") ? (
+                  <div className="text-xs text-gray-500 bg-gray-50 p-2.5 rounded-[6px] border border-[#E5E5E5] flex items-center justify-between mb-2">
+                    <span className="truncate max-w-[200px]">
+                      {link.split("/").pop()}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setLink("")}
+                      className="text-red-600 hover:text-red-800 underline font-medium text-xs cursor-pointer"
+                    >
+                      Replace File
+                    </button>
+                  </div>
+                ) : null}
+                {(!link || !link.startsWith("/public/uploads/")) && (
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        setPdfFile(e.target.files[0]);
+                      }
+                    }}
+                    className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426] file:border-0 file:bg-transparent file:text-sm file:font-medium file:pt-1.5"
+                    required={!editingId && !link}
+                  />
+                )}
               </div>
+
+              {!pdfFile && (!link || !link.startsWith("/public/uploads/")) && (
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-[#3a3a3a]">
+                    Or Canva Link
+                  </label>
+                  <input
+                    type="url"
+                    value={link}
+                    onChange={(e) => setLink(e.target.value)}
+                    placeholder="https://canva.link/..."
+                    className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426]"
+                  />
+                </div>
+              )}
+
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-[#3a3a3a]">
-                  Cover Image
+                  Cover Image{" "}
+                  {pdfFile || (link && link.startsWith("/public/uploads/"))
+                    ? "(Optional - Auto-generated from PDF)"
+                    : ""}
                 </label>
                 <input
                   type="file"
@@ -388,7 +449,11 @@ export default function MagazinesPage() {
                     if (e.target.files?.[0]) setImageFile(e.target.files[0]);
                   }}
                   className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426] file:border-0 file:bg-transparent file:text-sm file:font-medium file:pt-1.5"
-                  required={!editingId}
+                  required={
+                    !editingId &&
+                    !pdfFile &&
+                    (!link || !link.startsWith("/public/uploads/"))
+                  }
                 />
               </div>
               <div className="pt-2 flex items-center justify-end gap-3">
