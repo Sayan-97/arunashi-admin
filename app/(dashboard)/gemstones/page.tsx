@@ -21,7 +21,7 @@ export default function GemstonesPage() {
 
   // Form state
   const [name, setName] = useState("");
-  const [link, setLink] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const fetchGemstones = async () => {
     try {
@@ -58,7 +58,7 @@ export default function GemstonesPage() {
 
   const openEditModal = (gemstone: Gemstone) => {
     setName(gemstone.name);
-    setLink(gemstone.link);
+    setPdfFile(null); // Reset file input when opening edit modal
     setEditingId(gemstone.id);
     setIsModalOpen(true);
   };
@@ -67,13 +67,13 @@ export default function GemstonesPage() {
     setIsModalOpen(false);
     setEditingId(null);
     setName("");
-    setLink("");
+    setPdfFile(null);
   };
 
   const handleSaveGemstone = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !link) {
-      toast.error("Please fill all required fields");
+    if (!editingId && !pdfFile) {
+      toast.error("Please select a PDF file");
       return;
     }
 
@@ -82,12 +82,13 @@ export default function GemstonesPage() {
       const url = editingId ? `/api/gemstones/${editingId}` : "/api/gemstones";
       const method = editingId ? "PUT" : "POST";
 
+      const formData = new FormData();
+      if (name) formData.append("name", name);
+      if (pdfFile) formData.append("pdf", pdfFile);
+
       const res = await fetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, link }),
+        body: formData,
       });
 
       if (!res.ok) throw new Error("Failed to save gemstone");
@@ -216,7 +217,7 @@ export default function GemstonesPage() {
                     className="flex items-center gap-2 text-[14px] text-blue-600 hover:text-blue-800 hover:underline truncate mt-auto"
                   >
                     <LinkIcon className="size-4 shrink-0" />
-                    <span className="truncate">{gemstone.link}</span>
+                    <span className="truncate">View PDF File</span>
                   </a>
                 </div>
               ))}
@@ -244,29 +245,34 @@ export default function GemstonesPage() {
             <form onSubmit={handleSaveGemstone} className="p-6 space-y-5">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-[#3a3a3a]">
-                  Gemstone Name
+                  Gemstone Name (Optional on Add)
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Garnet - Demantoid"
+                  placeholder={
+                    editingId
+                      ? "e.g. Garnet - Demantoid"
+                      : "Auto-generated from filename if empty"
+                  }
                   className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426]"
-                  required
+                  required={!!editingId}
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-[#3a3a3a]">
-                  Canva Link (Embed or Share URL)
+                  {editingId
+                    ? "PDF File (Optional, select to replace)"
+                    : "PDF File"}
                 </label>
                 <input
-                  type="url"
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  placeholder="https://www.canva.com/design/..."
-                  className="w-full h-10 px-3 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426]"
-                  required
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+                  className="w-full h-10 px-3 py-2 bg-white border border-[#E5E5E5] rounded-[6px] text-sm text-black focus:outline-none focus:border-[#627426]"
+                  required={!editingId}
                 />
               </div>
 
