@@ -6,31 +6,30 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const { link } = await request.json();
   const backendUrl = process.env.API_URL || "http://localhost:8000";
 
   try {
+    const formData = await request.formData();
     const res = await fetch(`${backendUrl}/api/products/${id}/linesheet`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
         Cookie: await getAuthCookieHeader(),
       },
-      body: JSON.stringify({ link }),
+      body: formData,
     });
 
     const data = await res.json();
 
     if (!res.ok) {
       return NextResponse.json(
-        { message: data.message || "Failed to save linesheet link" },
+        { message: data.message || "Failed to save linesheet" },
         { status: res.status },
       );
     }
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Linesheet link update error:", error);
+    console.error("Linesheet update error:", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },
