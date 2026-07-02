@@ -9,7 +9,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <body>
+    <>
       <Toaster />
       <RealtimeSyncListener />
       <div className="flex h-screen overflow-hidden bg-white">
@@ -24,6 +24,6 @@ export default function DashboardLayout({
           {children}
         </main>
       </div>
-    </body>
+    </>
   );
 }

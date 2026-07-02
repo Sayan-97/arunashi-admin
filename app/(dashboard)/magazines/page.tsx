@@ -391,7 +391,7 @@ export default function MagazinesPage() {
                 <label className="text-sm font-medium text-[#3a3a3a]">
                   Magazine PDF File
                 </label>
-                {link && link.startsWith("/public/uploads/") ? (
+                {link?.startsWith("/public/uploads/") ? (
                   <div className="text-xs text-gray-500 bg-gray-50 p-2.5 rounded-[6px] border border-[#E5E5E5] flex items-center justify-between mb-2">
                     <span className="truncate max-w-[200px]">
                       {link.split("/").pop()}
@@ -438,7 +438,7 @@ export default function MagazinesPage() {
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-[#3a3a3a]">
                   Cover Image{" "}
-                  {pdfFile || (link && link.startsWith("/public/uploads/"))
+                  {pdfFile || link?.startsWith("/public/uploads/")
                     ? "(Optional - Auto-generated from PDF)"
                     : ""}
                 </label>

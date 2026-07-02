@@ -32,7 +32,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("antialiased", fleur.variable, nunito.variable)}
     >
-      {children}
+      <body>{children}</body>
     </html>
   );
 }

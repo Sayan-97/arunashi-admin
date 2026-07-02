@@ -18,7 +18,7 @@ export function LinesheetForm({
   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       const selected = e.target.files[0];
       if (selected.type !== "application/pdf") {
         toast.error("Only PDF files are allowed");

@@ -6,9 +6,11 @@ import {
   Gem,
   Home,
   Image as ImageIcon,
+  Layers,
   LogOut,
   Settings,
   Sparkles,
+  Tags,
   Users,
 } from "lucide-react";
 import Image from "next/image";
@@ -35,6 +37,8 @@ export default function Sidebar() {
     { label: "Retailers", href: "/retailers/pending-approvals", icon: Users },
     { label: "Requests", href: "/requests/pending-requests", icon: FileText },
     { label: "Products", href: "/products/active-products", icon: Activity },
+    { label: "Collections", href: "/collections", icon: Layers },
+    { label: "Categories", href: "/categories", icon: Tags },
     { label: "Magazines", href: "/magazines", icon: FileText },
     { label: "Banners", href: "/banners", icon: ImageIcon },
     { label: "Diamonds", href: "/diamonds", icon: Gem },

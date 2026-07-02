@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getShopifyProducts } from "@/services/products";
+import { ProductCategoriesForm } from "./categories-form";
+import { ProductCollectionsForm } from "./collections-form";
 import { LinesheetForm } from "./linesheet-form";
 
 export default function ProductDetailsPage({
@@ -190,6 +192,32 @@ async function ProductDetailsContent({
               <LinesheetForm
                 productId={String(product.id)}
                 initialLink={product.linesheetLink}
+              />
+            </div>
+          </div>
+
+          {/* Collections Section */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-[#627426] font-sans border-b border-[#EEEEEE] pb-2">
+              Collections
+            </h4>
+            <div className="bg-[#FAF9F6]/60 border border-[#EEEEEE] rounded-[8px] p-5">
+              <ProductCollectionsForm
+                productId={String(product.id)}
+                initialCollections={product.collections || []}
+              />
+            </div>
+          </div>
+
+          {/* Categories Section */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-[#627426] font-sans border-b border-[#EEEEEE] pb-2">
+              Categories
+            </h4>
+            <div className="bg-[#FAF9F6]/60 border border-[#EEEEEE] rounded-[8px] p-5">
+              <ProductCategoriesForm
+                productId={String(product.id)}
+                initialCategories={product.categories || []}
               />
             </div>
           </div>
