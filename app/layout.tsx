@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-import localFont from "next/font/local";
 import "@flaticon/flaticon-uicons/css/all/all.css";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-
-const fleur = localFont({
-  src: "../public/FleurBold.otf",
-  variable: "--font-fleur",
-});
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -30,7 +24,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fleur.variable, nunito.variable)}
+      className={cn("antialiased", nunito.variable)}
     >
       <body>{children}</body>
     </html>

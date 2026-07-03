@@ -1,14 +1,17 @@
-import { FileText, RefreshCw, UserPlus } from "lucide-react";
+import { BookOpen, FileText, Gem, Users } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
-import { SyncButton } from "@/components/dashboard/SyncButton";
 import { UserMenu } from "@/components/dashboard/UserMenu";
 import { getAuthCookieHeader } from "@/lib/auth";
+import { getShopifyProducts } from "@/services/products";
 import { getAllProductRequests } from "@/services/requests";
-import { getPendingApprovals } from "@/services/retailers";
+import {
+  getApprovedRetailers,
+  getPendingApprovals,
+} from "@/services/retailers";
 import { getUserProfile } from "@/services/user";
 
 interface Retailer {
@@ -31,6 +34,23 @@ interface ProductRequest {
     email: string;
     company: string | null;
   };
+}
+
+async function getMagazines(cookieHeader: string) {
+  const backendUrl = process.env.API_URL || "http://localhost:8000";
+  try {
+    const res = await fetch(`${backendUrl}/api/magazines`, {
+      headers: {
+        Cookie: cookieHeader,
+      },
+    });
+    if (!res.ok) return [];
+    const result = await res.json();
+    return result.data || [];
+  } catch (error) {
+    console.error("Error fetching magazines:", error);
+    return [];
+  }
 }
 
 export default function DashboardHomePage() {
@@ -92,11 +112,17 @@ async function DashboardContent() {
   const token = await getAuthCookieHeader();
 
   let pendingRetailers: Retailer[] = [];
+  let approvedRetailers: any[] = [];
   let allRequests: ProductRequest[] = [];
+  let products: any[] = [];
+  let magazines: any[] = [];
 
   try {
     pendingRetailers = await getPendingApprovals(token);
+    approvedRetailers = await getApprovedRetailers(token);
     allRequests = await getAllProductRequests(token);
+    products = await getShopifyProducts(token);
+    magazines = await getMagazines(token);
   } catch (err: any) {
     if (err.message === "Unauthorized") {
       const cookieStore = await cookies();
@@ -110,6 +136,16 @@ async function DashboardContent() {
   // Filter dynamic counts
   const pendingRequestsCount = allRequests.filter(
     (req) => req.status === "PENDING",
+  ).length;
+  const approvedRequestsCount = allRequests.filter(
+    (req) => req.status === "APPROVED",
+  ).length;
+
+  const activeProductsCount = products.filter(
+    (p) => p.status === "active",
+  ).length;
+  const draftProductsCount = products.filter(
+    (p) => p.status === "draft",
   ).length;
 
   // Format Helpers
@@ -145,59 +181,85 @@ async function DashboardContent() {
   return (
     <div className="space-y-10">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Card 1: Pending Retailer Approvals */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Card 1: Product Catalog */}
         <div className="bg-white border border-[#EEEEEE] rounded-[10px] p-6 shadow-sm flex items-center gap-5">
           <div className="size-[60px] shrink-0 bg-[#EEEEE2]/60 text-[#627426] rounded-full flex items-center justify-center">
-            <UserPlus className="size-6" />
+            <Gem className="size-6" />
           </div>
-          <div className="flex-1">
-            <p className="text-sm text-[#868686] font-medium leading-none">
-              Pending Retailor Approvals
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-[#868686] font-medium leading-none truncate">
+              Products Catalog
             </p>
-            <p className="text-3xl font-bold text-[#111111] mt-2 font-sans">
-              {pendingRetailers.length}
+            <p className="text-2xl font-bold text-[#111111] mt-2 font-sans">
+              {products.length}{" "}
+              <span className="text-xs text-[#868686] font-normal">Total</span>
+            </p>
+            <p className="text-xs text-[#868686] mt-1.5 font-medium leading-none">
+              Active:{" "}
+              <span className="text-[#627426] font-bold">
+                {activeProductsCount}
+              </span>{" "}
+              • Draft:{" "}
+              <span className="text-gray-900 font-bold">
+                {draftProductsCount}
+              </span>
             </p>
           </div>
         </div>
 
-        {/* Card 2: Pending Requests */}
+        {/* Card 2: Retailers Directory */}
+        <div className="bg-white border border-[#EEEEEE] rounded-[10px] p-6 shadow-sm flex items-center gap-5">
+          <div className="size-[60px] shrink-0 bg-[#EEEEE2]/60 text-[#627426] rounded-full flex items-center justify-center">
+            <Users className="size-6" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-[#868686] font-medium leading-none truncate">
+              Retailers Directory
+            </p>
+            <p className="text-2xl font-bold text-[#111111] mt-2 font-sans">
+              {approvedRetailers.length}{" "}
+              <span className="text-xs text-[#868686] font-normal">
+                Approved
+              </span>
+            </p>
+            <p className="text-xs text-[#868686] mt-1.5 font-medium leading-none">
+              Pending Approvals:{" "}
+              <span className="text-[#627426] font-bold">
+                {pendingRetailers.length}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        {/* Card 3: Product Requests */}
         <div className="bg-white border border-[#EEEEEE] rounded-[10px] p-6 shadow-sm flex items-center gap-5">
           <div className="size-[60px] shrink-0 bg-[#EEEEE2]/60 text-[#627426] rounded-full flex items-center justify-center">
             <FileText className="size-6" />
           </div>
-          <div className="flex-1">
-            <p className="text-sm text-[#868686] font-medium leading-none">
-              Pending Requests
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-[#868686] font-medium leading-none truncate">
+              Product Requests
             </p>
-            <p className="text-3xl font-bold text-[#111111] mt-2 font-sans">
-              {pendingRequestsCount}
+            <p className="text-2xl font-bold text-[#111111] mt-2 font-sans">
+              {allRequests.length}{" "}
+              <span className="text-xs text-[#868686] font-normal">Total</span>
             </p>
-          </div>
-        </div>
-
-        {/* Card 3: Sync Status */}
-        <div className="bg-white border border-[#EEEEEE] rounded-[10px] p-6 shadow-sm flex items-center justify-between gap-5">
-          <div className="flex items-center gap-5">
-            <div className="size-[60px] shrink-0 bg-[#EEEEE2]/60 text-[#627426] rounded-full flex items-center justify-center">
-              <RefreshCw className="size-6" />
-            </div>
-            <div>
-              <p className="text-sm text-[#868686] font-medium leading-none">
-                Sync Status
-              </p>
-              <p className="text-[20px] font-bold text-[#111111] mt-2 font-sans leading-none">
-                All Good
-              </p>
-            </div>
-          </div>
-          <div>
-            <SyncButton />
+            <p className="text-xs text-[#868686] mt-1.5 font-medium leading-none">
+              Pending:{" "}
+              <span className="text-[#627426] font-bold">
+                {pendingRequestsCount}
+              </span>{" "}
+              • Approved:{" "}
+              <span className="text-gray-900 font-bold">
+                {approvedRequestsCount}
+              </span>
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Lower Grid: Recent Requests & Recent Retailor Applications */}
+      {/* Lower Grid: Recent Requests & Sidebar */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-stretch">
         {/* Left Column: Recent Requests */}
         <div className="xl:col-span-2 flex flex-col space-y-4">
@@ -293,51 +355,143 @@ async function DashboardContent() {
           </div>
         </div>
 
-        {/* Right Column: Recent Retailor Applications */}
-        <div className="xl:col-span-1 flex flex-col space-y-4">
-          <h2 className="text-lg font-semibold text-[#111111] font-sans">
-            Recent Retailor Applications
-          </h2>
-          <div className="flex-1 bg-white border border-[#EEEEEE] rounded-[10px] p-6 shadow-sm flex flex-col justify-between">
-            {recentRetailers.length > 0 ? (
-              <div className="space-y-4 flex-1">
-                {recentRetailers.map((retailer) => (
-                  <div
-                    key={retailer.id}
-                    className="flex items-center justify-between pb-4 last:pb-0 border-b border-[#EEEEEE] last:border-0"
-                  >
-                    <div className="flex items-center gap-3.5">
-                      {/* Circle Avatar with Initials */}
-                      <div className="size-10 rounded-full bg-[#627426] text-white flex items-center justify-center font-bold text-sm tracking-wide shrink-0">
-                        {getInitials(retailer.name)}
+        {/* Right Column: Applications & Latest Magazines Stacked */}
+        <div className="xl:col-span-1 flex flex-col gap-6">
+          {/* Recent Retailor Applications Block */}
+          <div className="flex flex-col space-y-4">
+            <h2 className="text-lg font-semibold text-[#111111] font-sans">
+              Recent Retailor Applications
+            </h2>
+            <div className="bg-white border border-[#EEEEEE] rounded-[10px] p-6 shadow-sm">
+              {recentRetailers.length > 0 ? (
+                <div className="space-y-4">
+                  {recentRetailers.map((retailer) => (
+                    <div
+                      key={retailer.id}
+                      className="flex items-center justify-between pb-4 last:pb-0 border-b border-[#EEEEEE] last:border-0"
+                    >
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        {/* Circle Avatar with Initials */}
+                        <div className="size-10 rounded-full bg-[#627426] text-white flex items-center justify-center font-bold text-sm tracking-wide shrink-0">
+                          {getInitials(retailer.name)}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-semibold text-[15px] text-[#111111] leading-none truncate">
+                            {retailer.name}
+                          </p>
+                          <p className="text-[13px] text-[#868686] mt-1 truncate">
+                            {retailer.company}
+                          </p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="font-semibold text-[15px] text-[#111111] leading-none truncate">
-                          {retailer.name}
-                        </p>
-                        <p className="text-[13px] text-[#868686] mt-1 truncate">
-                          {retailer.company}
-                        </p>
+                      <div>
+                        <Link href="/retailers/pending-approvals">
+                          <button
+                            type="button"
+                            className="h-8 px-4 rounded-[6px] border border-[#bec36c] text-[#627426] hover:bg-[#627426] hover:text-white transition-all text-xs font-semibold cursor-pointer"
+                          >
+                            View
+                          </button>
+                        </Link>
                       </div>
                     </div>
-                    <div>
-                      <Link href="/retailers/pending-approvals">
-                        <button
-                          type="button"
-                          className="h-8 px-4 rounded-[6px] border border-[#bec36c] text-[#627426] hover:bg-[#627426] hover:text-white transition-all text-xs font-semibold cursor-pointer"
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center text-sm text-[#868686] py-10">
+                  No pending retailer applications.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Latest Magazines Block */}
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-[#111111] font-sans">
+                Latest Magazines
+              </h2>
+              <Link
+                href="/magazines"
+                className="text-xs font-semibold text-[#627426] hover:underline underline-offset-2 cursor-pointer"
+              >
+                Show More
+              </Link>
+            </div>
+            <div className="bg-white border border-[#EEEEEE] rounded-[10px] p-6 shadow-sm">
+              {magazines.length > 0 ? (
+                <div className="space-y-4">
+                  {[...magazines]
+                    .sort(
+                      (a: any, b: any) =>
+                        new Date(b.date).getTime() - new Date(a.date).getTime(),
+                    )
+                    .slice(0, 3)
+                    .map((mag: any) => {
+                      const displayTitle = mag.issueNumber
+                        ? `Issue No. ${mag.issueNumber}`
+                        : "Magazine Publication";
+                      const displayDate = new Date(mag.date).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          year: "numeric",
+                        },
+                      );
+
+                      return (
+                        <div
+                          key={mag.id}
+                          className="flex items-center justify-between pb-4 last:pb-0 border-b border-[#EEEEEE] last:border-0"
                         >
-                          View
-                        </button>
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex-1 flex items-center justify-center text-sm text-[#868686] py-10">
-                No pending retailer applications.
-              </div>
-            )}
+                          <div className="flex items-center gap-3.5 min-w-0">
+                            {/* Icon representing a magazine */}
+                            <div className="size-10 rounded-[6px] bg-[#EEEEE2]/60 text-[#627426] flex items-center justify-center font-bold text-sm shrink-0">
+                              <BookOpen className="size-5" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-semibold text-[15px] text-[#111111] leading-none truncate">
+                                {displayTitle}
+                              </p>
+                              <p className="text-[13px] text-[#868686] mt-1 truncate">
+                                {displayDate}
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            {mag.link ? (
+                              <a
+                                href={mag.link}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <button
+                                  type="button"
+                                  className="h-8 px-4 rounded-[6px] border border-[#bec36c] text-[#627426] hover:bg-[#627426] hover:text-white transition-all text-xs font-semibold cursor-pointer"
+                                >
+                                  Read
+                                </button>
+                              </a>
+                            ) : (
+                              <button
+                                type="button"
+                                disabled
+                                className="h-8 px-4 rounded-[6px] border border-gray-100 text-gray-400 text-xs font-semibold cursor-not-allowed"
+                              >
+                                N/A
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              ) : (
+                <div className="text-center text-sm text-[#868686] py-10">
+                  No magazines added yet.
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

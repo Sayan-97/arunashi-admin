@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
-export function LinesheetForm({
+export function CertificateForm({
   productId,
   initialLink,
   productName,
@@ -33,7 +33,7 @@ export function LinesheetForm({
   const handleUpload = async () => {
     if (!file) return;
     setIsSaving(true);
-    const toastId = toast.loading("Uploading linesheet PDF...", {
+    const toastId = toast.loading("Uploading certificate PDF...", {
       position: "top-right",
     });
 
@@ -41,17 +41,17 @@ export function LinesheetForm({
       const formData = new FormData();
       formData.append("pdf", file);
 
-      const res = await fetch(`/api/products/${productId}/linesheet`, {
+      const res = await fetch(`/api/products/${productId}/certificate`, {
         method: "PUT",
         body: formData,
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Failed to upload linesheet");
+        throw new Error(data.message || "Failed to upload certificate");
       }
 
-      toast.success("Linesheet uploaded successfully", { id: toastId });
+      toast.success("Certificate uploaded successfully", { id: toastId });
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
       router.refresh();
@@ -63,9 +63,9 @@ export function LinesheetForm({
   };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this linesheet?")) return;
+    if (!confirm("Are you sure you want to delete this certificate?")) return;
     setIsSaving(true);
-    const toastId = toast.loading("Deleting linesheet...", {
+    const toastId = toast.loading("Deleting certificate...", {
       position: "top-right",
     });
 
@@ -73,17 +73,17 @@ export function LinesheetForm({
       const formData = new FormData();
       formData.append("deleteFile", "true");
 
-      const res = await fetch(`/api/products/${productId}/linesheet`, {
+      const res = await fetch(`/api/products/${productId}/certificate`, {
         method: "PUT",
         body: formData,
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Failed to delete linesheet");
+        throw new Error(data.message || "Failed to delete certificate");
       }
 
-      toast.success("Linesheet deleted successfully", { id: toastId });
+      toast.success("Certificate deleted successfully", { id: toastId });
       router.refresh();
     } catch (error: any) {
       toast.error(error.message, { id: toastId });
@@ -98,11 +98,11 @@ export function LinesheetForm({
     if (!link) return "";
     const relativePath = link.startsWith("/public/uploads/")
       ? link
-      : `/public/uploads/linesheets/${productName}.pdf`;
+      : `/public/uploads/certificates/${productName}.pdf`;
     return `${backendUrl}${relativePath}`;
   };
 
-  // Extract filename from path (e.g. "/public/uploads/linesheets/Lotus Flower.pdf" -> "Lotus Flower.pdf")
+  // Extract filename from path (e.g. "/public/uploads/certificates/Lotus Flower.pdf" -> "Lotus Flower.pdf")
   const getFilename = (pathStr: string) => {
     if (!pathStr.startsWith("/public/uploads/")) {
       return productName ? `${productName}.pdf` : pathStr;
@@ -123,7 +123,7 @@ export function LinesheetForm({
               <span className="text-sm font-medium text-gray-900 line-clamp-1">
                 {getFilename(initialLink)}
               </span>
-              <span className="text-xs text-gray-500">PDF Linesheet</span>
+              <span className="text-xs text-gray-500">PDF Certificate</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -156,11 +156,11 @@ export function LinesheetForm({
               onChange={handleFileChange}
               ref={fileInputRef}
               className="hidden"
-              id="linesheet-pdf-file"
+              id="certificate-pdf-file"
               disabled={isSaving}
             />
             <label
-              htmlFor="linesheet-pdf-file"
+              htmlFor="certificate-pdf-file"
               className="cursor-pointer h-7 px-3 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-[4px] text-xs font-medium text-gray-700 inline-flex items-center transition-colors select-none shrink-0"
             >
               Choose PDF
@@ -173,11 +173,7 @@ export function LinesheetForm({
             type="button"
             onClick={handleUpload}
             disabled={!file || isSaving}
-            className={`h-10 px-5 rounded-[6px] text-sm font-semibold transition-all shrink-0 select-none inline-flex items-center justify-center gap-1.5 ${
-              file && !isSaving
-                ? "bg-[#627426] text-white hover:bg-[#627426]/90 cursor-pointer shadow-sm"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed border border-[#E5E5E5]"
-            }`}
+            className="h-10 px-4 bg-[#627426] hover:bg-[#627426]/90 text-white text-xs font-semibold rounded-[6px] inline-flex items-center justify-center gap-1.5 transition-colors shrink-0 disabled:opacity-50 select-none cursor-pointer"
           >
             <Upload className="size-4" />
             Upload PDF

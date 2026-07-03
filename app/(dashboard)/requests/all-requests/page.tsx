@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, MoreVertical } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -341,18 +341,10 @@ async function AllRequestsContent({
 
                       {/* Actions */}
                       <td className="py-5 px-6 align-middle text-right">
-                        <div className="inline-flex items-center gap-2">
-                          <ViewRequestButton
-                            request={request}
-                            defaultOpen={request.id === openRequestId}
-                          />
-                          <button
-                            type="button"
-                            className="p-1.5 text-[#868686] hover:text-black transition-colors rounded-full hover:bg-gray-100 cursor-pointer"
-                          >
-                            <MoreVertical className="size-[18px]" />
-                          </button>
-                        </div>
+                        <ViewRequestButton
+                          request={request}
+                          defaultOpen={request.id === openRequestId}
+                        />
                       </td>
                     </tr>
                   );

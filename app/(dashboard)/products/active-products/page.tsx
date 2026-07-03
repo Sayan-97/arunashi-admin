@@ -94,10 +94,10 @@ async function ActiveProductsContent({
       (v.sku || "").toLowerCase().includes(q),
     );
     return (
-      product.title.toLowerCase().includes(q) ||
-      product.handle.toLowerCase().includes(q) ||
-      product.vendor.toLowerCase().includes(q) ||
-      product.product_type.toLowerCase().includes(q) ||
+      (product.title || "").toLowerCase().includes(q) ||
+      (product.handle || "").toLowerCase().includes(q) ||
+      (product.vendor || "").toLowerCase().includes(q) ||
+      (product.product_type || "").toLowerCase().includes(q) ||
       matchesSku
     );
   });

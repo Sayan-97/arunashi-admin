@@ -151,7 +151,7 @@ export default function AboutAdminPage() {
             <div className="w-1/2 h-full overflow-y-auto p-10 bg-[#FAF9F6]/10">
               <div className="max-w-[760px] mx-auto bg-white p-10 border border-[#EEEEEE] rounded-[8px] shadow-sm select-text">
                 {/* Title Preview */}
-                <h1 className="text-center font-fleur text-[36px] leading-tight uppercase tracking-wider mb-10 text-foreground">
+                <h1 className="text-center font-nunito text-[36px] leading-tight uppercase tracking-wider mb-10 text-foreground">
                   About Us
                 </h1>
 

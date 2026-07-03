@@ -2,9 +2,10 @@
 
 import { Check, Loader2, Pencil, Trash2, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ProductCategoriesForm } from "./categories-form";
+import { CertificateForm } from "./certificate-form";
 import { ProductCollectionsForm } from "./collections-form";
 import { LinesheetForm } from "./linesheet-form";
 
@@ -16,6 +17,11 @@ export function ProductDetailsClient({
   initialProduct,
 }: ProductDetailsClientProps) {
   const [product, setProduct] = useState(initialProduct);
+
+  useEffect(() => {
+    setProduct(initialProduct);
+  }, [initialProduct]);
+
   const [isSaving, setIsSaving] = useState<Record<string, boolean>>({});
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>("");
@@ -903,6 +909,20 @@ export function ProductDetailsClient({
           <LinesheetForm
             productId={String(product.id)}
             initialLink={product.linesheetLink || null}
+            productName={product.title}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h4 className="text-sm font-bold uppercase tracking-wider text-[#627426] font-sans border-b border-[#EEEEEE] pb-2">
+          Lab Reports / Certificates PDF
+        </h4>
+        <div className="bg-[#FAF9F6]/60 border border-[#EEEEEE] rounded-[8px] p-5">
+          <CertificateForm
+            productId={String(product.id)}
+            initialLink={product.certificatesLink || null}
+            productName={product.title}
           />
         </div>
       </div>
