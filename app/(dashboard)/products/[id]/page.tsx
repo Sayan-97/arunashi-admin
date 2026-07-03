@@ -80,7 +80,13 @@ async function ProductDetailsWrapper({
             <h1 className="text-xl font-bold font-nunito text-gray-900">
               {product.title}
             </h1>
-            <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-gray-100 text-gray-700">
+            <span
+              className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase ${
+                product.status?.toLowerCase() === "active"
+                  ? "bg-[#627426]/10 text-[#627426] border border-[#627426]/20"
+                  : "bg-gray-100 text-gray-700 border border-transparent"
+              }`}
+            >
               {product.status}
             </span>
           </div>
