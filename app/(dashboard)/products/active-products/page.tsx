@@ -226,9 +226,12 @@ async function ActiveProductsContent({
                                       : "Deactivated"
                                   }
                                 />
-                                <span className="truncate max-w-[300px]">
+                                <Link
+                                  href={`/products/${product.id}`}
+                                  className="truncate max-w-[300px] hover:text-[#627426] hover:underline underline-offset-2 transition-colors"
+                                >
                                   {product.title}
-                                </span>
+                                </Link>
                               </div>
                               <div className="text-[12px] text-[#868686] mt-0.5 font-normal pl-4">
                                 Item no.: {sku}

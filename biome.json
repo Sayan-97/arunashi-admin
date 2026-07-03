@@ -30,7 +30,8 @@
         "noStaticElementInteractions": "off",
         "useKeyWithClickEvents": "off",
         "noLabelWithoutControl": "off",
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"

@@ -2,9 +2,9 @@ import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
+import { AddProductButton } from "@/components/products/AddProductButton";
 import { ProductSearch } from "@/components/products/ProductSearch";
 import { ProductStatusToggle } from "@/components/products/ProductStatusToggle";
-import { SyncButton } from "@/components/products/SyncButton";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getShopifyProducts } from "@/services/products";
 
@@ -126,7 +126,7 @@ async function AllProductsContent({
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <SyncButton />
+          <AddProductButton />
           <NotificationMenu />
         </div>
       </header>
@@ -218,9 +218,12 @@ async function AllProductsContent({
                                       : "Deactivated"
                                   }
                                 />
-                                <span className="truncate max-w-[300px]">
+                                <Link
+                                  href={`/products/${product.id}`}
+                                  className="truncate max-w-[300px] hover:text-[#627426] hover:underline underline-offset-2 transition-colors"
+                                >
                                   {product.title}
-                                </span>
+                                </Link>
                               </div>
                               <div className="text-[12px] text-[#868686] mt-0.5 font-normal pl-4">
                                 Item no.: {sku}
