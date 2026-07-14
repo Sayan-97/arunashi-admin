@@ -35,7 +35,11 @@ export default function Sidebar() {
   const navItems = [
     { label: "Dashboard", href: "/", icon: Home },
     { label: "Retailers", href: "/retailers/pending-approvals", icon: Users },
-    { label: "Requests", href: "/requests/pending-requests", icon: FileText },
+    {
+      label: "Product Requests",
+      href: "/requests/pending-requests",
+      icon: FileText,
+    },
     { label: "Products", href: "/products/active-products", icon: Activity },
     { label: "Collections", href: "/collections", icon: Layers },
     { label: "Categories", href: "/categories", icon: Tags },
@@ -70,7 +74,7 @@ export default function Sidebar() {
           const active =
             item.label === "Retailers"
               ? isRetailersSelected
-              : item.label === "Requests"
+              : item.label === "Product Requests"
                 ? isRequestsSelected
                 : item.label === "Products"
                   ? isProductsSelected
@@ -123,7 +127,7 @@ export default function Sidebar() {
               )}
 
               {/* Requests Submenu */}
-              {item.label === "Requests" && isRequestsSelected && (
+              {item.label === "Product Requests" && isRequestsSelected && (
                 <div className="pl-12.5 pr-4 py-1.5 flex flex-col gap-3">
                   <Link
                     href="/requests/pending-requests"

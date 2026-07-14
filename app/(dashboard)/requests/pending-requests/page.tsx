@@ -178,10 +178,10 @@ async function PendingRequestsContent({
             <thead>
               <tr className="border-b border-[#EEEEEE] sticky top-0 bg-white z-10 shadow-[inset_0_-1px_0_rgba(0,0,0,0.05)]">
                 <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
-                  Products
+                  Request
                 </th>
                 <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider">
-                  Retailer
+                  Requested Item(s)
                 </th>
                 <th className="py-4.5 px-6 text-[12px] font-semibold text-[#868686] capitalize tracking-wider select-none">
                   Date Requested &darr;
@@ -212,7 +212,7 @@ async function PendingRequestsContent({
                       key={request.id}
                       className="border-b border-[#EEEEEE] last:border-b-0 hover:bg-gray-50/50 transition-colors"
                     >
-                      {/* Products */}
+                      {/* Request Details */}
                       <td className="py-5 px-6 align-middle">
                         <div className="flex items-center gap-4">
                           {/* Image Container */}
@@ -289,22 +289,29 @@ async function PendingRequestsContent({
                             </div>
                           )}
 
-                          {/* Name and Item No */}
+                          {/* Name and Request No */}
                           <div className="min-w-0">
                             <div className="font-semibold text-[15px] text-[#111111] leading-snug truncate max-w-[200px]">
-                              {items[0]?.name || "N/A"}
+                              {retailerName}
                             </div>
-                            <div className="text-[12px] text-[#868686] mt-0.5 font-normal">
-                              Item No: {items[0]?.itemNo || "N/A"}{" "}
-                              {itemsCount > 1 && `(+${itemsCount - 1} more)`}
+                            <div className="text-[12px] text-[#868686] mt-0.5 font-normal font-mono uppercase">
+                              REQ-{request.id.split("-")[0].substring(0, 7)}
                             </div>
                           </div>
                         </div>
                       </td>
 
-                      {/* Retailer Info */}
-                      <td className="py-5 px-6 align-middle font-semibold text-[15px] text-[#111111]">
-                        {retailerName}
+                      {/* Requested Items */}
+                      <td className="py-5 px-6 align-middle">
+                        <div className="min-w-0">
+                          <div className="font-semibold text-[15px] text-[#111111] leading-snug truncate max-w-[200px]">
+                            {items[0]?.name || "N/A"}
+                          </div>
+                          <div className="text-[12px] text-[#868686] mt-0.5 font-normal">
+                            Item No: {items[0]?.itemNo || "N/A"}{" "}
+                            {itemsCount > 1 && `(+${itemsCount - 1} more)`}
+                          </div>
+                        </div>
                       </td>
 
                       {/* Date Requested */}
