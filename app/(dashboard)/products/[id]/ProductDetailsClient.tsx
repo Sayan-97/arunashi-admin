@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { ProductCategoriesForm } from "./categories-form";
 import { CertificateForm } from "./certificate-form";
 import { ProductCollectionsForm } from "./collections-form";
+import { EcommerceUrlForm } from "./ecommerce-url-form";
 import { LinesheetForm } from "./linesheet-form";
 
 interface ProductDetailsClientProps {
@@ -236,7 +237,9 @@ export function ProductDetailsClient({
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <h1>{product.title}</h1>
+              <h1 className="text-2xl md:text-3xl font-serif font-light text-[#111111] uppercase tracking-wider">
+                {product.title}
+              </h1>
               <button
                 type="button"
                 onClick={() => startEditing("title", product.title)}
@@ -923,6 +926,18 @@ export function ProductDetailsClient({
             productId={String(product.id)}
             initialLink={product.certificatesLink || null}
             productName={product.title}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h4 className="text-sm font-bold uppercase tracking-wider text-[#627426] font-sans border-b border-[#EEEEEE] pb-2">
+          E-commerce Site URL
+        </h4>
+        <div className="bg-[#FAF9F6]/60 border border-[#EEEEEE] rounded-[8px] p-5">
+          <EcommerceUrlForm
+            productId={String(product.id)}
+            initialLink={product.ecommerceUrl || null}
           />
         </div>
       </div>
