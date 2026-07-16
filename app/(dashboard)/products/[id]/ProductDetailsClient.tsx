@@ -499,52 +499,6 @@ export function ProductDetailsClient({
             )}
           </div>
 
-          {/* Wholesale Price */}
-          <div className="space-y-1">
-            <span className="text-[#868686] text-xs font-semibold uppercase tracking-wider">
-              Wholesale Price ($)
-            </span>
-            {editingField === "wholesalePrice" ? (
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  className="border rounded px-2 py-1 text-sm bg-white focus:outline-none focus:border-[#bec36c]"
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={() => handleUpdateField("wholesalePrice", editValue)}
-                  className="text-green-600 hover:text-green-800 cursor-pointer"
-                >
-                  <Check className="size-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditingField(null)}
-                  className="text-gray-500 hover:text-gray-800 cursor-pointer"
-                >
-                  <X className="size-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex justify-between items-center gap-2 border-b border-gray-200/40 pb-1 h-8">
-                <span className="font-semibold text-[#111111] text-base truncate">
-                  {formatPrice(product.wholesalePrice)}
-                </span>
-                <button
-                  type="button"
-                  onClick={() =>
-                    startEditing("wholesalePrice", product.wholesalePrice || "")
-                  }
-                  className="text-gray-400 hover:text-gray-600 shrink-0 cursor-pointer"
-                >
-                  <Pencil className="size-3.5" />
-                </button>
-              </div>
-            )}
-          </div>
-
           {/* Inventory */}
           <div className="space-y-1">
             <span className="text-[#868686] text-xs font-semibold uppercase tracking-wider">

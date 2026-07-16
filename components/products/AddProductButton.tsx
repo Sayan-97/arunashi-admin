@@ -22,7 +22,6 @@ export function AddProductButton() {
   const [title, setTitle] = useState("");
   const [sku, setSku] = useState("");
   const [msrp, setMsrp] = useState("");
-  const [wholesalePrice, setWholesalePrice] = useState("");
   const [inventory, setInventory] = useState("0");
   const [variant1, setVariant1] = useState("");
   const [variant2, setVariant2] = useState("");
@@ -117,7 +116,6 @@ export function AddProductButton() {
       formData.append("title", title);
       formData.append("sku", sku);
       formData.append("msrp", msrp);
-      formData.append("wholesalePrice", wholesalePrice);
       formData.append("inventory", inventory);
       formData.append("variant1", variant1);
       formData.append("variant2", variant2);
@@ -244,18 +242,6 @@ export function AddProductButton() {
                     placeholder="e.g. 5200"
                     value={msrp}
                     onChange={(e) => setMsrp(e.target.value)}
-                    className="w-full border rounded px-3 py-2 text-sm bg-white"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
-                    Wholesale Price ($)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 3100"
-                    value={wholesalePrice}
-                    onChange={(e) => setWholesalePrice(e.target.value)}
                     className="w-full border rounded px-3 py-2 text-sm bg-white"
                   />
                 </div>
