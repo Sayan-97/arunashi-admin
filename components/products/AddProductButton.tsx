@@ -66,7 +66,6 @@ export function AddProductButton() {
     setTitle("");
     setSku("");
     setMsrp("");
-    setWholesalePrice("");
     setInventory("0");
     setVariant1("");
     setVariant2("");
