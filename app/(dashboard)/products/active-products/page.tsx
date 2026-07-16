@@ -1,4 +1,5 @@
 import { Bell, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
@@ -200,11 +201,15 @@ async function ActiveProductsContent({
                             {/* Image */}
                             <div className="size-16 shrink-0 bg-[#FAF9F6] border border-[#EEEEEE] rounded-[6px] overflow-hidden flex items-center justify-center p-1">
                               {imageSrc ? (
-                                <img
-                                  src={imageSrc}
-                                  alt={product.title}
-                                  className="size-full object-contain"
-                                />
+                                <div className="relative size-full">
+                                  <Image
+                                    src={imageSrc}
+                                    alt={product.title}
+                                    fill
+                                    sizes="64px"
+                                    className="object-contain"
+                                  />
+                                </div>
                               ) : (
                                 <div className="text-[10px] text-[#868686] font-medium font-sans">
                                   No Image

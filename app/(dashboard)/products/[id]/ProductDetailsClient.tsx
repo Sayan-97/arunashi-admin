@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Loader2, Pencil, Trash2, Upload, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -362,11 +363,15 @@ export function ProductDetailsClient({
                 key={img.src || index}
                 className="group relative aspect-square bg-[#FAF9F6] border border-[#EEEEEE] rounded-[12px] overflow-hidden flex items-center justify-center p-3"
               >
-                <img
-                  src={img.src}
-                  alt=""
-                  className="size-full object-contain"
-                />
+                <div className="relative size-full">
+                  <Image
+                    src={img.src}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                    className="object-contain"
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => handleDeleteImage(img.src)}

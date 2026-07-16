@@ -202,6 +202,8 @@ export function ViewRequestButton({
                       <img
                         src={item.image}
                         alt={item.name}
+                        loading="lazy"
+                        decoding="async"
                         className="size-full object-contain"
                       />
                     ) : (

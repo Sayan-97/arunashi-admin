@@ -3,7 +3,7 @@
 import { updateTag } from "next/cache";
 
 /**
- * Server Action to revalidate Next.js "use cache" tags from Client Components.
+ * Server Action to revalidate Next.js fetch cache tags from Client Components.
  */
 export async function revalidateRealtimeTags(tags: string[]) {
   for (const tag of tags) {

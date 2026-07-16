@@ -1,12 +1,6 @@
-import { cacheLife, cacheTag } from "next/cache";
-
 const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 
 export async function getAllProductRequests(cookieHeader: string) {
-  "use cache";
-  cacheLife("days");
-  cacheTag("product-requests");
-
   const backendUrl = getBackendUrl();
 
   try {
@@ -14,6 +8,7 @@ export async function getAllProductRequests(cookieHeader: string) {
       headers: {
         Cookie: cookieHeader,
       },
+      next: { revalidate: 60, tags: ["product-requests"] },
     });
 
     if (!res.ok) {

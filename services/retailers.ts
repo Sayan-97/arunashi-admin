@@ -1,12 +1,6 @@
-import { cacheLife, cacheTag } from "next/cache";
-
 const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 
 export async function getPendingApprovals(cookieHeader: string) {
-  "use cache";
-  cacheLife("days");
-  cacheTag("pending-approvals");
-
   const backendUrl = getBackendUrl();
 
   try {
@@ -14,6 +8,7 @@ export async function getPendingApprovals(cookieHeader: string) {
       headers: {
         Cookie: cookieHeader,
       },
+      next: { revalidate: 60, tags: ["pending-approvals"] },
     });
 
     if (!res.ok) {
@@ -33,10 +28,6 @@ export async function getPendingApprovals(cookieHeader: string) {
 }
 
 export async function getApprovedRetailers(cookieHeader: string) {
-  "use cache";
-  cacheLife("days");
-  cacheTag("approved-retailers");
-
   const backendUrl = getBackendUrl();
 
   try {
@@ -44,6 +35,7 @@ export async function getApprovedRetailers(cookieHeader: string) {
       headers: {
         Cookie: cookieHeader,
       },
+      next: { revalidate: 60, tags: ["approved-retailers"] },
     });
 
     if (!res.ok) {

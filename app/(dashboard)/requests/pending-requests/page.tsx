@@ -222,6 +222,8 @@ async function PendingRequestsContent({
                                 <img
                                   src={items[0].image}
                                   alt={items[0].name || ""}
+                                  loading="lazy"
+                                  decoding="async"
                                   className="size-full object-contain"
                                 />
                               ) : (
@@ -238,6 +240,8 @@ async function PendingRequestsContent({
                                   <img
                                     src={items[0].image}
                                     alt=""
+                                    loading="lazy"
+                                    decoding="async"
                                     className="size-full object-contain"
                                   />
                                 ) : (
@@ -252,6 +256,8 @@ async function PendingRequestsContent({
                                   <img
                                     src={items[1].image}
                                     alt=""
+                                    loading="lazy"
+                                    decoding="async"
                                     className="size-full object-contain"
                                   />
                                 ) : (
@@ -267,6 +273,8 @@ async function PendingRequestsContent({
                                     <img
                                       src={items[2].image}
                                       alt=""
+                                      loading="lazy"
+                                      decoding="async"
                                       className="size-full object-contain"
                                     />
                                   ) : (

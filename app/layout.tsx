@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-import "@flaticon/flaticon-uicons/css/all/all.css";
+import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +26,10 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("antialiased", nunito.variable)}
     >
-      <body>{children}</body>
+      <body>
+        <NextTopLoader color="#627426" showSpinner={false} height={3} />
+        {children}
+      </body>
     </html>
   );
 }

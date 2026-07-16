@@ -1,12 +1,6 @@
-import { cacheLife, cacheTag } from "next/cache";
-
 const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 
 export async function getShopifyProducts(cookieHeader: string) {
-  "use cache";
-  cacheLife("days");
-  cacheTag("shopify-products");
-
   const backendUrl = getBackendUrl();
 
   try {
@@ -14,6 +8,7 @@ export async function getShopifyProducts(cookieHeader: string) {
       headers: {
         Cookie: cookieHeader,
       },
+      next: { revalidate: 60, tags: ["shopify-products"] },
     });
 
     if (!res.ok) {

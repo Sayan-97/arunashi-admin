@@ -1,12 +1,19 @@
 import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { NotificationMenu } from "@/components/dashboard/NotificationMenu";
-import { AddProductButton } from "@/components/products/AddProductButton";
 import { ProductSearch } from "@/components/products/ProductSearch";
 import { ProductStatusToggle } from "@/components/products/ProductStatusToggle";
 import { getAuthCookieHeader } from "@/lib/auth";
 import { getShopifyProducts } from "@/services/products";
+
+const AddProductButton = dynamic(() =>
+  import("@/components/products/AddProductButton").then(
+    (mod) => mod.AddProductButton,
+  ),
+);
 
 interface ShopifyProduct {
   id: number | string;
@@ -192,11 +199,15 @@ async function AllProductsContent({
                             {/* Image */}
                             <div className="size-16 shrink-0 bg-[#FAF9F6] border border-[#EEEEEE] rounded-[6px] overflow-hidden flex items-center justify-center p-1">
                               {imageSrc ? (
-                                <img
-                                  src={imageSrc}
-                                  alt={product.title}
-                                  className="size-full object-contain"
-                                />
+                                <div className="relative size-full">
+                                  <Image
+                                    src={imageSrc}
+                                    alt={product.title}
+                                    fill
+                                    sizes="64px"
+                                    className="object-contain"
+                                  />
+                                </div>
                               ) : (
                                 <div className="text-[10px] text-[#868686] font-medium font-sans">
                                   No Image
