@@ -96,14 +96,20 @@ export function CertificateForm({
 
   const getPdfLink = (link?: string | null) => {
     if (!link) return "";
+    if (link.startsWith("http")) {
+      return link;
+    }
     const relativePath = link.startsWith("/public/uploads/")
       ? link
       : `/public/uploads/certificates/${productName}.pdf`;
     return `${backendUrl}${relativePath}`;
   };
 
-  // Extract filename from path (e.g. "/public/uploads/certificates/Lotus Flower.pdf" -> "Lotus Flower.pdf")
   const getFilename = (pathStr: string) => {
+    if (pathStr.startsWith("http")) {
+      const parts = pathStr.split("/");
+      return decodeURIComponent(parts[parts.length - 1]);
+    }
     if (!pathStr.startsWith("/public/uploads/")) {
       return productName ? `${productName}.pdf` : pathStr;
     }
