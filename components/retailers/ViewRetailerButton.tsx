@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ResendActivationButton } from "./ResendActivationButton";
 
 interface Retailer {
   id: string;
@@ -27,6 +28,7 @@ interface Retailer {
   press_title?: string | null;
   pressTitle?: string | null;
   createdAt: string;
+  status?: string | null;
 }
 
 interface ViewRetailerButtonProps {
@@ -190,16 +192,22 @@ export function ViewRetailerButton({
 
         {/* Footer actions */}
         <div className="border-t border-[#EEEEEE] pt-4 flex items-center justify-end gap-3 select-none">
-          {showApproveButton && (
-            <button
-              type="button"
-              onClick={handleApprove}
-              disabled={isApproving}
-              className="h-10 px-5 rounded-[6px] bg-[#627426] text-white hover:bg-[#627426]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-semibold cursor-pointer"
-            >
-              {isApproving ? "Approving..." : "Approve Retailer"}
-            </button>
-          )}
+          {showApproveButton &&
+            (retailer.status === "PENDING" ? (
+              <button
+                type="button"
+                onClick={handleApprove}
+                disabled={isApproving}
+                className="h-10 px-5 rounded-[6px] bg-[#627426] text-white hover:bg-[#627426]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-semibold cursor-pointer"
+              >
+                {isApproving ? "Approving..." : "Approve Retailer"}
+              </button>
+            ) : (
+              <ResendActivationButton
+                retailerId={retailer.id}
+                className="h-10 px-5 text-sm min-w-[120px]"
+              />
+            ))}
           <DialogClose asChild>
             <button
               type="button"

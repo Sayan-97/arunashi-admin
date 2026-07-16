@@ -19,6 +19,7 @@ interface Retailer {
   pressTitle?: string | null;
   press_title?: string | null;
   createdAt: string;
+  status: string;
 }
 
 interface PendingRetailerActionsProps {

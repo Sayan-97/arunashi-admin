@@ -4,12 +4,16 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { resendActivationEmail } from "@/actions/retailers";
 
+import { cn } from "@/lib/utils";
+
 interface ResendActivationButtonProps {
   retailerId: string;
+  className?: string;
 }
 
 export function ResendActivationButton({
   retailerId,
+  className,
 }: ResendActivationButtonProps) {
   const [loading, setLoading] = useState(false);
 
@@ -41,9 +45,12 @@ export function ResendActivationButton({
       type="button"
       onClick={handleResend}
       disabled={loading}
-      className="h-8 px-4 rounded-[6px] border border-[#a2a657] text-[#627426] hover:bg-[#627426] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all text-xs font-semibold cursor-pointer flex items-center justify-center min-w-[100px]"
+      className={cn(
+        "h-8 px-4 rounded-[6px] border border-[#a2a657] text-[#627426] hover:bg-[#627426] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all text-xs font-semibold cursor-pointer flex items-center justify-center min-w-[100px]",
+        className,
+      )}
     >
-      {loading ? "Sending..." : "Resend Link"}
+      {loading ? "Reminding..." : "Remind"}
     </button>
   );
 }
