@@ -55,6 +55,20 @@ export default function RealtimeSyncListener() {
           tagsToRevalidate.push("product-requests");
         } else if (payload.type === "products:updated") {
           tagsToRevalidate.push("shopify-products");
+        } else if (payload.type === "diamonds:updated") {
+          tagsToRevalidate.push("diamonds");
+        } else if (payload.type === "gemstones:updated") {
+          tagsToRevalidate.push("gemstones");
+        } else if (payload.type === "banners:updated") {
+          tagsToRevalidate.push("banners");
+        } else if (payload.type === "magazines:updated") {
+          tagsToRevalidate.push("magazines");
+        } else if (payload.type === "about:updated") {
+          tagsToRevalidate.push("about");
+        } else if (payload.type === "terms:updated") {
+          tagsToRevalidate.push("terms");
+        } else if (payload.type === "privacy:updated") {
+          tagsToRevalidate.push("privacy");
         }
 
         // 1. Toast notifications for admin dashboard actions

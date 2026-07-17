@@ -19,7 +19,7 @@ async function getCategories(): Promise<Category[]> {
       headers: {
         Cookie: cookieHeader,
       },
-      cache: "no-store",
+      next: { revalidate: 60, tags: ["categories"] },
     });
     if (!res.ok) throw new Error("Failed to fetch categories");
     const json = await res.json();

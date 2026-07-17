@@ -14,7 +14,7 @@ const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 async function getMagazines(): Promise<Magazine[]> {
   try {
     const res = await fetch(`${getBackendUrl()}/api/magazines`, {
-      cache: "no-store",
+      next: { revalidate: 60, tags: ["magazines"] },
     });
     if (!res.ok) throw new Error("Failed to fetch magazines");
     const json = await res.json();

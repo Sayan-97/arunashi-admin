@@ -5,7 +5,7 @@ const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 async function getAboutContent(): Promise<string> {
   try {
     const res = await fetch(`${getBackendUrl()}/api/about`, {
-      cache: "no-store",
+      next: { revalidate: 60, tags: ["about"] },
     });
     if (!res.ok) throw new Error("Failed to fetch about details");
     const json = await res.json();

@@ -12,7 +12,7 @@ const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 async function getGemstones(): Promise<Gemstone[]> {
   try {
     const res = await fetch(`${getBackendUrl()}/api/gemstones`, {
-      cache: "no-store",
+      next: { revalidate: 60, tags: ["gemstones"] },
     });
     if (!res.ok) throw new Error("Failed to fetch gemstones");
     const json = await res.json();

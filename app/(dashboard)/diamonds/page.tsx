@@ -12,7 +12,7 @@ const getBackendUrl = () => process.env.API_URL || "http://localhost:8000";
 async function getDiamonds(): Promise<Diamond[]> {
   try {
     const res = await fetch(`${getBackendUrl()}/api/diamonds`, {
-      cache: "no-store",
+      next: { revalidate: 60, tags: ["diamonds"] },
     });
     if (!res.ok) throw new Error("Failed to fetch diamonds");
     const json = await res.json();

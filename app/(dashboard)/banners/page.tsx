@@ -19,7 +19,7 @@ async function getBanners(): Promise<Banner[]> {
       headers: {
         Cookie: cookieHeader,
       },
-      cache: "no-store",
+      next: { revalidate: 60, tags: ["banners"] },
     });
     if (!res.ok) throw new Error("Failed to fetch banners");
     const json = await res.json();

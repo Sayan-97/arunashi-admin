@@ -19,7 +19,7 @@ async function getCollections(): Promise<Collection[]> {
       headers: {
         Cookie: cookieHeader,
       },
-      cache: "no-store",
+      next: { revalidate: 60, tags: ["collections"] },
     });
     if (!res.ok) throw new Error("Failed to fetch collections");
     const json = await res.json();
